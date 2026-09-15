@@ -259,7 +259,7 @@ export default function CheckoutScreen() {
               <TextInput
                 style={s.inputFieldFull}
                 value={cashText}
-                onChangeText={setCashText}
+                onChangeText={(t) => setCashText(formatInput(t))}
                 keyboardType="numeric"
                 placeholder="0"
                 placeholderTextColor="#D6D3D1"
