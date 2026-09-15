@@ -1,21 +1,19 @@
 import { Tabs } from "expo-router";
-import { Text } from "react-native";
-
-import { HapticTab } from "@/components/haptic-tab";
 import { Colors } from "@/constants/theme";
+import { MaterialIcon } from "@/components/MaterialIcon";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.primary.main,
-        tabBarInactiveTintColor: Colors.text.disabled,
+        tabBarInactiveTintColor: "#94A3B8",
         tabBarStyle: {
-          backgroundColor: Colors.background.elevated,
-          borderTopColor: Colors.border.light,
-          borderTopWidth: 1,
-          height: 85,
-          paddingBottom: 24,
+          backgroundColor: "#FFFFFF",
+          borderTopColor: "#F1F5F9",
+          borderTopWidth: 0.5,
+          height: 64,
+          paddingBottom: 8,
           paddingTop: 8,
         },
         tabBarLabelStyle: {
@@ -27,28 +25,42 @@ export default function TabLayout() {
           marginBottom: 0,
         },
         headerShown: false,
-        tabBarButton: HapticTab,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Kasir",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>🏠</Text>,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcon name="point_of_sale" size={20} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="products"
         options={{
-          title: "Produk",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>📦</Text>,
+          title: "Katalog",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcon name="inventory_2" size={20} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: "Riwayat",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>🕐</Text>,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcon name="receipt_long" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Pengaturan",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcon name="tune" size={20} color={color} />
+          ),
         }}
       />
     </Tabs>

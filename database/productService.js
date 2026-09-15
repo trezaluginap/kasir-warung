@@ -47,7 +47,9 @@ export const openProductDatabase = async () => {
 
     db = await SQLite.openDatabaseAsync(DATABASE_NAME);
     await createProductsTable();
+    await migrateProductsTable();
     await insertDefaultProducts();
+    await seedProductsFromJSON();
     isInitialized = true;
     return true;
   } catch (error) {
@@ -76,6 +78,8 @@ const createProductsTable = async () => {
       harga REAL NOT NULL,
       kategori TEXT DEFAULT 'Umum',
       stok INTEGER DEFAULT NULL,
+      foto TEXT DEFAULT NULL,
+      barcode TEXT DEFAULT NULL,
       aktif INTEGER DEFAULT 1,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
@@ -92,69 +96,126 @@ const createProductsTable = async () => {
 };
 
 /**
+ * Migration tambah column foto & barcode untuk DB lama
+ */
+const migrateProductsTable = async () => {
+  try {
+    const columns = await db.getAllAsync("PRAGMA table_info(products)");
+    const hasFoto = columns.some((c) => c.name === "foto");
+    const hasBarcode = columns.some((c) => c.name === "barcode");
+    
+    if (!hasFoto) {
+      await db.execAsync("ALTER TABLE products ADD COLUMN foto TEXT DEFAULT NULL");
+      console.log("✅ Migration: column foto ditambahkan");
+    }
+    if (!hasBarcode) {
+      await db.execAsync("ALTER TABLE products ADD COLUMN barcode TEXT DEFAULT NULL");
+      console.log("✅ Migration: column barcode ditambahkan");
+    }
+  } catch (error) {
+    console.error("❌ Error migrate table products:", error);
+  }
+};
+
+/**
  * Insert produk default saat pertama kali install
  * Produk populer warung kecil
  */
 const insertDefaultProducts = async () => {
   try {
-    // Langsung pakai db, jangan getDatabase() karena dipanggil dari openProductDatabase()
-    // Cek apakah sudah ada produk
-    const result = await db.getFirstAsync(
-      "SELECT COUNT(*) as count FROM products",
-    );
+    const now = new Date().toISOString();
 
-    if (result.count > 0) {
-      console.log("✅ Produk default sudah ada");
-      return;
-    }
-
-    // Data produk default
     const defaultProducts = [
-      // Mie Instan
-      { nama: "Indomie Goreng", harga: 3000, kategori: "Makanan" },
+      { nama: "Indomie Goreng", harga: 3000, kategori: "Makanan", foto: "https://lh3.googleusercontent.com/aida-public/AB6AXuCCH95pyAkkxYrXELprico0XKHb8rj2TvuuKsp82bPWMl13J5dI1qLgk-8K_4oZ5SrRhqcmayLfCIdv79QTe-_HoQtep6ZaiA77fV6aQgHsdb22twlktAkNTO4H_RLDG0f3afIllHZLX4wpqX3jnjxvQR0AJialpbCNT7m41lK58fyDYL7zaLvUVXIjkTfbU0DEdUyK5s6lX-sQ5taTFhqwjYcxKdG3lCN6wSAZ4OCUUhlqdlYpO30aZQ" },
       { nama: "Indomie Soto", harga: 3000, kategori: "Makanan" },
       { nama: "Indomie Ayam Bawang", harga: 3000, kategori: "Makanan" },
       { nama: "Mie Sedaap Goreng", harga: 3000, kategori: "Makanan" },
-
-      // Minuman
-      { nama: "Teh Botol Sosro", harga: 4000, kategori: "Minuman" },
+      { nama: "Teh Botol Sosro", harga: 4000, kategori: "Minuman", foto: "https://lh3.googleusercontent.com/aida-public/AB6AXuDwagmObpED3xK7MXbDwlbiz0aRMEvH1YhL20TAx6K5f7sOff7SzU5eZO6YOs4TWGjradMk9_5A_zvMarwxv59J35NMOGT3hvP3DkjwraC62R_4zJ-AkBmYsCslE-x6EPrzrCa-2KbR2lePx3bU7aPUWYpYFcdqHikQ1IZ6mLZkG4FXHfa3TY9fE3sncV6AZ3WQphBBil1rq_64WxJtQ-NNFxsQlAIlDPdfQ183UZSeLXnhBNjaRkz8gw" },
       { nama: "Aqua 600ml", harga: 3500, kategori: "Minuman" },
       { nama: "Fruit Tea", harga: 4500, kategori: "Minuman" },
       { nama: "Coca Cola 250ml", harga: 5000, kategori: "Minuman" },
-
-      // Susu
       { nama: "Susu Ultra 250ml", harga: 5000, kategori: "Minuman" },
       { nama: "Susu Dancow Sachet", harga: 2500, kategori: "Minuman" },
-
-      // Snack
-      { nama: "Chitato", harga: 8000, kategori: "Snack" },
-      { nama: "Taro", harga: 7000, kategori: "Snack" },
+      { nama: "Chitato", harga: 8000, kategori: "Snack", foto: "https://lh3.googleusercontent.com/aida-public/AB6AXuA9FJuzMfLPs0IpVmJIiYcAAVM_Jp4KuCZXWzXQ7YU1KL5oxZ9PzFpTIuBzbbyIWorWk52M98KH29Kb0rNa8Xxi_QoQM8ewhjn_bCOa6z1xRyRvxmmnjaeZWZz9C7wLC2R1AMsfJLNr1V9U1BlBqa2EkBLK4uBcEg2fO5ciHt6Yl6TeqGQXgmUSOOxAnN5eoIYBurrcOr-Ibfax5NpDZP2uL5n7GgUPOSIGvwMNDEELr5KP3UKAUyuoRw" },
+      { nama: "Taro", harga: 7000, kategori: "Snack", foto: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6Qp1-g3--vgbDbTsAF3VACf5e63xGslfGquKC83XOqFt3fKlO_JxhxQvDwNB0_wisjpcmFCDPc1FVO3RSDMHULEIOYlsl0ghiYSrwLjlqBAN2ijXIBiYNq-xDJO8ByLDZ2JHdpiolQNOmH-p4zAQeJXB_9sp2s7-CNFCpboeOL_u2wrgUDQAthL_pZGZklHE0PZp2xqfBVDCGK2UrBRnUHxUA-fHxXJ9ZVXaLZwVdAPVHY0WJUthE4g" },
       { nama: "Oreo", harga: 10000, kategori: "Snack" },
-
-      // Kebutuhan
       { nama: "Telur 1 Butir", harga: 2500, kategori: "Kebutuhan" },
       { nama: "Gula Pasir 1kg", harga: 15000, kategori: "Kebutuhan" },
-      { nama: "Kopi Kapal Api Sachet", harga: 2000, kategori: "Kebutuhan" },
+      { nama: "Kopi Kapal Api Sachet", harga: 2000, kategori: "Kebutuhan", foto: "https://lh3.googleusercontent.com/aida-public/AB6AXuAWZvirK39X8lO5LuKeeAvERTuNUlb9XNqMxylNGbdgb92L-3tCDUS3gik9KvWpKitQ4AQK__7CyddU73KPsRQT91da9QZXTpKA6XBNF3nGoDcQmIrF63TFQHElBrF2dkeIbC5eaKDCwcz4aQMe7tld0Ncj_d-GcapL5VCVLlh5o5Nxx3cVDXanO-iV8Ob-_WnX7am0xe6zXMKErZ_Cn1yOtXevN7g7hVaOvRbJdwjsWMjWkd98EVobcQ" },
     ];
-
-    const now = new Date().toISOString();
 
     for (const product of defaultProducts) {
       await db.runAsync(
-        "INSERT INTO products (nama, harga, kategori, aktif, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)",
+        `INSERT INTO products (nama, harga, kategori, stok, foto, aktif, created_at, updated_at)
+         SELECT ?, ?, ?, NULL, ?, 1, ?, ?
+         WHERE NOT EXISTS (
+           SELECT 1 FROM products WHERE nama = ? AND kategori = ?
+         )`,
+        product.nama,
+        product.harga,
+        product.kategori,
+        product.foto,
+        now,
+        now,
+        product.nama,
+        product.kategori,
+      );
+    }
+
+    console.log(`✅ Default products sync done`);
+  } catch (error) {
+    console.error("❌ Error insert default products:", error);
+  }
+};
+
+/**
+ * Seed 232 produk dari warung_products_2026-09-14.json
+ * Dipanggil setelah insertDefaultProducts
+ */
+const seedProductsFromJSON = async () => {
+  try {
+    const jsonData = require("./warung_products_2026-09-14.json");
+    const products = jsonData.products || [];
+    
+    const activeProducts = products.filter(p => p.aktif === 1 && p.kategori !== "Test");
+    
+    const seen = new Set();
+    const uniqueProducts = [];
+    for (const p of activeProducts) {
+      const key = `${p.nama}-${p.kategori}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueProducts.push(p);
+      }
+    }
+    
+    console.log(`📦 Seed JSON: ${uniqueProducts.length} produk unik dari ${products.length} total`);
+    
+    const now = new Date().toISOString();
+    let inserted = 0;
+    
+    for (const product of uniqueProducts) {
+      const result = await db.runAsync(
+        `INSERT INTO products (nama, harga, kategori, stok, foto, barcode, aktif, created_at, updated_at)
+         SELECT ?, ?, ?, NULL, NULL, NULL, 1, ?, ?
+         WHERE NOT EXISTS (
+           SELECT 1 FROM products WHERE nama = ? AND kategori = ?
+         )`,
         product.nama,
         product.harga,
         product.kategori,
         now,
         now,
+        product.nama,
+        product.kategori,
       );
+      
+      if (result.changes > 0) inserted++;
     }
-
-    console.log(
-      `✅ ${defaultProducts.length} produk default berhasil ditambahkan!`,
-    );
+    
+    console.log(`✅ JSON seed done: ${inserted} produk baru ditambahkan`);
   } catch (error) {
-    console.error("❌ Error insert default products:", error);
+    console.error("❌ Error seed JSON products:", error);
   }
 };
 
@@ -172,7 +233,7 @@ export const tambahProduk = async (data) => {
     throw new Error("Database belum siap!");
   }
 
-  const { nama, harga, kategori = "Umum", stok = null } = data;
+  const { nama, harga, kategori = "Umum", stok = null, foto = null, barcode = null } = data;
 
   if (!nama || !harga) {
     throw new Error("Nama dan harga wajib diisi!");
@@ -182,11 +243,13 @@ export const tambahProduk = async (data) => {
 
   try {
     const result = await dbInstance.runAsync(
-      "INSERT INTO products (nama, harga, kategori, stok, aktif, created_at, updated_at) VALUES (?, ?, ?, ?, 1, ?, ?)",
+      "INSERT INTO products (nama, harga, kategori, stok, foto, barcode, aktif, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)",
       nama,
       harga,
       kategori,
       stok,
+      foto,
+      barcode,
       now,
       now,
     );
@@ -199,6 +262,8 @@ export const tambahProduk = async (data) => {
       harga,
       kategori,
       stok,
+      foto,
+      barcode,
       aktif: 1,
       created_at: now,
       updated_at: now,
@@ -290,7 +355,7 @@ export const updateProduk = async (id, data) => {
     throw new Error("Database belum siap!");
   }
 
-  const { nama, harga, kategori, stok } = data;
+  const { nama, harga, kategori, stok, foto, barcode } = data;
   const now = new Date().toISOString();
 
   const updates = [];
@@ -311,6 +376,14 @@ export const updateProduk = async (id, data) => {
   if (stok !== undefined) {
     updates.push("stok = ?");
     params.push(stok);
+  }
+  if (foto !== undefined) {
+    updates.push("foto = ?");
+    params.push(foto);
+  }
+  if (barcode !== undefined) {
+    updates.push("barcode = ?");
+    params.push(barcode);
   }
 
   updates.push("updated_at = ?");
@@ -452,6 +525,33 @@ export const updateStok = async (id, jumlahPerubahan) => {
   }
 };
 
+/**
+ * Cari produk berdasarkan barcode
+ * Untuk fitur scanner
+ */
+export const cariProdukByBarcode = async (barcode) => {
+  const dbInstance = await getDatabase();
+
+  if (!dbInstance) {
+    throw new Error("Database belum siap!");
+  }
+
+  if (!barcode || barcode.trim() === "") {
+    return null;
+  }
+
+  try {
+    const row = await dbInstance.getFirstAsync(
+      "SELECT * FROM products WHERE barcode = ? AND aktif = 1",
+      barcode.trim(),
+    );
+    return row || null;
+  } catch (error) {
+    console.error("❌ Error cari produk by barcode:", error);
+    throw error;
+  }
+};
+
 export default {
   openProductDatabase,
   tambahProduk,
@@ -462,4 +562,5 @@ export default {
   hapusProdukPermanent,
   ambilKategori,
   updateStok,
+  cariProdukByBarcode,
 };

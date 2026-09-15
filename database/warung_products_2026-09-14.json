@@ -1,0 +1,2336 @@
+{
+  "exportedAt": "2026-09-14T09:54:57.064Z",
+  "totalProducts": 233,
+  "products": [
+    {
+      "id": 737,
+      "nama": "Indomie Goreng",
+      "harga": 3000,
+      "kategori": "Makanan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 738,
+      "nama": "Indomie Soto",
+      "harga": 3000,
+      "kategori": "Makanan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 739,
+      "nama": "Indomie Ayam Bawang",
+      "harga": 3500,
+      "kategori": "Makanan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 740,
+      "nama": "Mie Sedaap Goreng",
+      "harga": 3000,
+      "kategori": "Makanan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 741,
+      "nama": "Teh Botol Sosro",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 742,
+      "nama": "Aqua 600ml",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 743,
+      "nama": "Fruit Tea",
+      "harga": 4500,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 744,
+      "nama": "Coca Cola 250ml",
+      "harga": 6000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 745,
+      "nama": "Susu Ultra 250ml",
+      "harga": 7000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 746,
+      "nama": "Susu Dancow Sachet",
+      "harga": 5000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 747,
+      "nama": "Chitato",
+      "harga": 2000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 748,
+      "nama": "Taro",
+      "harga": 2000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 749,
+      "nama": "Oreo",
+      "harga": 2000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 750,
+      "nama": "Telur 1 Butir",
+      "harga": 2500,
+      "kategori": "Kebutuhan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 751,
+      "nama": "Minyak 1Liter",
+      "harga": 20000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 752,
+      "nama": "Kopi Kapal Api Sachet",
+      "harga": 2000,
+      "kategori": "Kebutuhan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 753,
+      "nama": "Mama lemon",
+      "harga": 4000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T07:05:34.856+00:00",
+      "updated_at": "2026-03-14T11:46:06.500Z"
+    },
+    {
+      "id": 754,
+      "nama": "Teh Pucuk",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T08:08:12.361+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 755,
+      "nama": "JC Djarum Coklat",
+      "harga": 18000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T04:15:40.307+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 756,
+      "nama": "Js Djarum super",
+      "harga": 26000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:44:31.112+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 757,
+      "nama": "Bango Sachet",
+      "harga": 1000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:48:41.207+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 758,
+      "nama": "Sambal Terasi",
+      "harga": 2000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:48:54.423+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 759,
+      "nama": "Saos ABC",
+      "harga": 1000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:49:07.922+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 760,
+      "nama": "Royco Dan Masako",
+      "harga": 500,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:49:54.537+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 761,
+      "nama": "Sedaap Bumbu (3 Pcs)",
+      "harga": 1000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:51:17.422+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 762,
+      "nama": "Aida",
+      "harga": 3000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:51:29.596+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 763,
+      "nama": "Sajiku",
+      "harga": 4000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:51:42.05+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 764,
+      "nama": "Racik",
+      "harga": 2500,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:51:53.87+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 765,
+      "nama": "Desaku Marinasi",
+      "harga": 1500,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:52:19.748+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 766,
+      "nama": "Desaku Bawang Putih, Kunyit, Ketumbar, Ladaku",
+      "harga": 1000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:52:56.207+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 767,
+      "nama": "Terekel 1 Pcs",
+      "harga": 1500,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:55:36.547+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 768,
+      "nama": "Terekel 2 Pcs",
+      "harga": 2500,
+      "kategori": "Umum",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:55:48.898+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 769,
+      "nama": "Sedap Kecap Pouch",
+      "harga": 2000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:56:14.716+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 770,
+      "nama": "Sedap Kecap Sachet",
+      "harga": 1000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:56:33.354+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 771,
+      "nama": "Bango Pouch",
+      "harga": 3500,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:56:49.136+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 772,
+      "nama": "Cuka",
+      "harga": 1500,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:57:02.247+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 773,
+      "nama": "Kara",
+      "harga": 7000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:57:52.762+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 774,
+      "nama": "Garam",
+      "harga": 3000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:58:22.666+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 775,
+      "nama": "Mie Sukses Goreng",
+      "harga": 4500,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:58:44.898+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 776,
+      "nama": "Mie Sukses Kuah",
+      "harga": 4000,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T07:58:57.038+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 777,
+      "nama": "Indomie Kuah",
+      "harga": 3500,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:00:35.219+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 778,
+      "nama": "Sedap Kuah",
+      "harga": 3000,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:00:45.268+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 779,
+      "nama": "Sedap Laksa, Seleksion Kuah, Sedap Goreng",
+      "harga": 3500,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:01:29.737+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 780,
+      "nama": "Bihun Tanam",
+      "harga": 9000,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:01:46.529+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 781,
+      "nama": "Bihunku",
+      "harga": 3500,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:01:57.562+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 782,
+      "nama": "Wow Spagetti Beli 2 Gratis 1",
+      "harga": 4000,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:02:13.995+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 783,
+      "nama": "So Yumie",
+      "harga": 1500,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:02:30.555+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 784,
+      "nama": "minyak 1/4",
+      "harga": 7000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:04:04.573+00:00",
+      "updated_at": "2026-08-30T13:16:33.769Z"
+    },
+    {
+      "id": 785,
+      "nama": "Minyak 1 Kg",
+      "harga": 11500,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:04:16.927+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 786,
+      "nama": "Terigu 1/4",
+      "harga": 3000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:04:35.228+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 787,
+      "nama": "Terigu 1 Kg",
+      "harga": 11000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:04:52.41+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 788,
+      "nama": "Aci",
+      "harga": 4000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:05:01.343+00:00",
+      "updated_at": "2026-08-30T13:16:59.944Z"
+    },
+    {
+      "id": 789,
+      "nama": "Tepung Beras Rosebrand Besar",
+      "harga": 9000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:06:27.616+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 790,
+      "nama": "Beras Ketan",
+      "harga": 14000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:06:44.252+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 791,
+      "nama": "Gula Halus",
+      "harga": 9000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:06:59.465+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 792,
+      "nama": "Ketanku",
+      "harga": 15000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:07:11.607+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 793,
+      "nama": "Segitiga Biru",
+      "harga": 14000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:07:21.94+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 794,
+      "nama": "Ekonomi Besar",
+      "harga": 5000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:08:09.6+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 795,
+      "nama": "Ekonomi kecil",
+      "harga": 2000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:08:34.991+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 796,
+      "nama": "mama lemon kecil",
+      "harga": 2000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:10:45.749+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 797,
+      "nama": "Mama lemon besar",
+      "harga": 4000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:11:09.783+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 798,
+      "nama": "Mama Lemon 650ml",
+      "harga": 10000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:11:38.003+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 799,
+      "nama": "Sabun batang",
+      "harga": 3500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:12:26.726+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 800,
+      "nama": "Lifebouy",
+      "harga": 4500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:13:00.261+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 801,
+      "nama": "Giv",
+      "harga": 3500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:14:46.267+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 802,
+      "nama": "Shinzui",
+      "harga": 6000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:15:31.364+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 803,
+      "nama": "Nuvo",
+      "harga": 3500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:15:55.966+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 804,
+      "nama": "Cusson",
+      "harga": 5000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:16:19.336+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 805,
+      "nama": "Daia 1pcs",
+      "harga": 1000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:17:27.592+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 806,
+      "nama": "Daia 1 rtg",
+      "harga": 5500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:17:47.425+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 807,
+      "nama": "So Klin 1pcs",
+      "harga": 1000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:19:39.885+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 808,
+      "nama": "So Klin 1 rtg",
+      "harga": 5500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:20:01.438+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 809,
+      "nama": "So Klin Liquid 1pcs",
+      "harga": 1000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:20:42.807+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 810,
+      "nama": "So Klin  Liquid 1pcs",
+      "harga": 500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:21:40.539+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 811,
+      "nama": "Royale 1 Rtg",
+      "harga": 6000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:25:16.664+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 812,
+      "nama": "Pampers Baby Happy L",
+      "harga": 2500,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:25:58.528+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 813,
+      "nama": "Larutan botol besar",
+      "harga": 8000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:28:37.925+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 814,
+      "nama": "larutan botol kecil",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:29:05.297+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 815,
+      "nama": "Larutan kaleng dewasa",
+      "harga": 7500,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:30:24.209+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 816,
+      "nama": "Milku",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:30:46.173+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 817,
+      "nama": "Floridina",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:31:04.474+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 818,
+      "nama": "Iso plus",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:31:25.285+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 819,
+      "nama": "Nipis madu",
+      "harga": 5000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:31:40.338+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 820,
+      "nama": "C-1000",
+      "harga": 8500,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:32:05.097+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 821,
+      "nama": "Pocari sweat",
+      "harga": 8000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:32:26.721+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 822,
+      "nama": "Adem sari chingku botol",
+      "harga": 8000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:33:03.409+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 823,
+      "nama": "Bear Brand",
+      "harga": 12000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:33:31.5+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 824,
+      "nama": "Sariwangi",
+      "harga": 1500,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:33:48.878+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 825,
+      "nama": "Aqua 1.5Lt",
+      "harga": 6000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:34:54.738+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 826,
+      "nama": "Tumi 1karton",
+      "harga": 15000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:35:22.943+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 827,
+      "nama": "Teh semesta 1 karton",
+      "harga": 22000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:35:45.04+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 828,
+      "nama": "Tissu",
+      "harga": 3000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:42:08.689+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 829,
+      "nama": "Ciptadent",
+      "harga": 4000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:42:25.448+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 830,
+      "nama": "Pepsodent Kecil",
+      "harga": 5500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:42:40.652+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 831,
+      "nama": "Pepsodent Besar",
+      "harga": 15000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:42:50.744+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 832,
+      "nama": "Close Up",
+      "harga": 9000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:43:03.807+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 833,
+      "nama": "Kodomo Pasta gigi",
+      "harga": 7000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:43:22.235+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 834,
+      "nama": "Sikat Gigi",
+      "harga": 4000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:43:49.499+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 835,
+      "nama": "Oskadon Biru / Sp",
+      "harga": 4000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:44:47.702+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 836,
+      "nama": "Sanmol 1 Strip",
+      "harga": 5000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:45:01.794+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 837,
+      "nama": "Sanmol 1 Pcs",
+      "harga": 1500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:45:25.608+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 838,
+      "nama": "Antangin Tablet 1 Strip",
+      "harga": 5000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:46:00.416+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 839,
+      "nama": "Antangin Tab 1 Pcs",
+      "harga": 1500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:46:20.641+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 840,
+      "nama": "Bodrex Extra, Migra, Flu Batuk/ Strip",
+      "harga": 5000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:47:06.841+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 841,
+      "nama": "Bodrex Extra, Migra, Flu Batuk/ Pcs",
+      "harga": 1500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:47:19.659+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 842,
+      "nama": "Ultraflu, Mixagrip/ Strip",
+      "harga": 5000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:47:45.167+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 843,
+      "nama": "ultraflu, Mixagrip, Neo Remachyl/ Pcs",
+      "harga": 1500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:48:09.381+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 844,
+      "nama": "Bintang 7",
+      "harga": 2000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:48:33.152+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 845,
+      "nama": "Aladina, Pilkita",
+      "harga": 3000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:48:53.098+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 846,
+      "nama": "Cap Bulan Monyet, Polisilane",
+      "harga": 2000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:49:23.039+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 847,
+      "nama": "Madurasa",
+      "harga": 1500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:49:43.106+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 848,
+      "nama": "Komix dewasa, Anak",
+      "harga": 2500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:49:59.175+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 849,
+      "nama": "Komix Herbal",
+      "harga": 3000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:50:10.647+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 850,
+      "nama": "Tolak Angin Cair Dewasa",
+      "harga": 6000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:50:48.593+00:00",
+      "updated_at": "2026-03-16T14:20:00.791Z"
+    },
+    {
+      "id": 851,
+      "nama": "Tolak Angin, Antangin Anak",
+      "harga": 3500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:51:26.286+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 852,
+      "nama": "Neo Uni Baby",
+      "harga": 10000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:53:53.113+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 853,
+      "nama": "Bodrexin PE",
+      "harga": 16000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:54:11.507+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 854,
+      "nama": "Termorex Plus",
+      "harga": 17000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:54:22.656+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 855,
+      "nama": "Termorex Demam",
+      "harga": 15000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:54:40.742+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 856,
+      "nama": "Hufagrip BP",
+      "harga": 24000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:55:13.093+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 857,
+      "nama": "Kool fever Bayi",
+      "harga": 8500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:55:30.634+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 858,
+      "nama": "Kool Fever Anak",
+      "harga": 9000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:55:44.515+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 859,
+      "nama": "Geliga Besar",
+      "harga": 11000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:55:58.017+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 860,
+      "nama": "Geliga Kecil",
+      "harga": 8000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:56:10.756+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 861,
+      "nama": "Betadine",
+      "harga": 9000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:56:20.605+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 862,
+      "nama": "Laserine Dewasa",
+      "harga": 10000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:56:32.713+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 863,
+      "nama": "Laserine Anak",
+      "harga": 9000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:56:42.262+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 864,
+      "nama": "Freshcare Hot",
+      "harga": 14000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:57:01.087+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 865,
+      "nama": "Freshcare Roll",
+      "harga": 15000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:57:12.897+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 866,
+      "nama": "Salep 88",
+      "harga": 15000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:57:34.001+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 867,
+      "nama": "Milanta Cair",
+      "harga": 18000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:57:48.784+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 868,
+      "nama": "Kayu Putih Kecil",
+      "harga": 8000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:58:16.173+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 869,
+      "nama": "Kayu Putih Besar",
+      "harga": 14000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:58:29.638+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 870,
+      "nama": "Henna Rambut",
+      "harga": 10000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:59:44.276+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 871,
+      "nama": "Bedak Salicyl",
+      "harga": 8000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T09:02:11.898+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 872,
+      "nama": "Rexona Pria",
+      "harga": 3000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T09:03:19.436+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 873,
+      "nama": "Supersol",
+      "harga": 1000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T09:04:58.276+00:00",
+      "updated_at": "2026-03-14T11:46:26.370Z"
+    },
+    {
+      "id": 874,
+      "nama": "Soklin Lantai",
+      "harga": 500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T09:05:13.242+00:00",
+      "updated_at": "2026-03-14T11:46:18.904Z"
+    },
+    {
+      "id": 875,
+      "nama": "Vanish",
+      "harga": 5000,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T09:05:24.986+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 876,
+      "nama": "Koyo Cabe, Antimo",
+      "harga": 1500,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T09:06:49.916+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 877,
+      "nama": "Twizz",
+      "harga": 27000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:03:54.807+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 878,
+      "nama": "Sampoerna Mild",
+      "harga": 38000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:04:14.781+00:00",
+      "updated_at": "2026-08-22T13:33:00.871Z"
+    },
+    {
+      "id": 879,
+      "nama": "Evo Diplomat",
+      "harga": 26000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:04:34.997+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 880,
+      "nama": "Neslite",
+      "harga": 24000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:04:52.077+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 881,
+      "nama": "Magnum Max",
+      "harga": 31000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:05:04.61+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 882,
+      "nama": "Magnum Filter",
+      "harga": 26000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:05:25.017+00:00",
+      "updated_at": "2026-06-28T07:32:49.112Z"
+    },
+    {
+      "id": 883,
+      "nama": "Magnum Filter 1/2",
+      "harga": 14000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:05:43.584+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 884,
+      "nama": "Js Djarum Super 1/2",
+      "harga": 14000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:06:08.953+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 885,
+      "nama": "Juara",
+      "harga": 15000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:11:02.821+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 886,
+      "nama": "Envio",
+      "harga": 14000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:11:23.294+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 887,
+      "nama": "76",
+      "harga": 16000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:11:36.479+00:00",
+      "updated_at": "2026-05-10T06:58:10.732Z"
+    },
+    {
+      "id": 888,
+      "nama": "234 Dji Sam Soe",
+      "harga": 22000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:11:59.785+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 889,
+      "nama": "234 Dji Sam Soe Reffil",
+      "harga": 24000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:12:27.856+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 890,
+      "nama": "Duff Bold",
+      "harga": 29000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:12:52.361+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 891,
+      "nama": "Duff Bold 1/2",
+      "harga": 15000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:13:13.575+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 892,
+      "nama": "Surya 16",
+      "harga": 42000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:13:37.558+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 893,
+      "nama": "Marlboro Filter",
+      "harga": 42000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:13:57.368+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 894,
+      "nama": "Esse Change",
+      "harga": 42000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:14:10.521+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 895,
+      "nama": "GM Gudang Garam Merah",
+      "harga": 18000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:15:06.89+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 896,
+      "nama": "GP Gudang Garam Filter",
+      "harga": 28000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:15:26.903+00:00",
+      "updated_at": "2026-03-21T03:03:54.689Z"
+    },
+    {
+      "id": 897,
+      "nama": "GP Gudang Garam Filter 1/2",
+      "harga": 15000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:15:40.881+00:00",
+      "updated_at": "2026-03-21T03:04:26.953Z"
+    },
+    {
+      "id": 898,
+      "nama": "Gula Pasir 1/4",
+      "harga": 6000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:20:17.726+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 899,
+      "nama": "Gula Pasir 1 Kg",
+      "harga": 20000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:20:36.094+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 900,
+      "nama": "Gula Merah 1/4",
+      "harga": 6000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:21:10.037+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 901,
+      "nama": "Mika Putu Ayu",
+      "harga": 8000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:21:55.401+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 902,
+      "nama": "Mika Kotak/Bulat Kecil/ pcs",
+      "harga": 2500,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:22:34.135+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 903,
+      "nama": "Mika Kotak Besar/ Pcs",
+      "harga": 3000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:22:47.426+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 904,
+      "nama": "Gelas Plastik Cup",
+      "harga": 8000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:24:10.489+00:00",
+      "updated_at": "2026-03-21T03:32:44.910Z"
+    },
+    {
+      "id": 905,
+      "nama": "Pampers L/M / Pcs",
+      "harga": 2500,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:24:41.497+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 906,
+      "nama": "Pampers XL / Pcs",
+      "harga": 3000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:25:18.154+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 907,
+      "nama": "Kapas",
+      "harga": 3000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:25:49.615+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 908,
+      "nama": "Pampers M / L 1 Rtg",
+      "harga": 14000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:26:14.241+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 909,
+      "nama": "Pampers XL 1 Rtg",
+      "harga": 17000,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:27:23.854+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 910,
+      "nama": "SP Kue",
+      "harga": 2500,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:28:56.834+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 911,
+      "nama": "Kerupuk Mentah",
+      "harga": 4000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:29:06.901+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 912,
+      "nama": "Tepung Roti",
+      "harga": 6000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:29:25.391+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 913,
+      "nama": "Telur 2 Pcs",
+      "harga": 4500,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:29:54.214+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 914,
+      "nama": "Telur 4 Pcs",
+      "harga": 9000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:30:14.883+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 915,
+      "nama": "Telur 1/2",
+      "harga": 18000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:31:08.532+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 916,
+      "nama": "Telur 1 Kg",
+      "harga": 34000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:31:26.47+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 917,
+      "nama": "Malkist Coklat Kelapa",
+      "harga": 8000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:32:17.776+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 918,
+      "nama": "Roma Kelapa Cream",
+      "harga": 12000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:32:50.089+00:00",
+      "updated_at": "2026-08-22T11:34:12.295Z"
+    },
+    {
+      "id": 919,
+      "nama": "Roma Kelapa Merah",
+      "harga": 10000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:33:06.464+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 920,
+      "nama": "Roma Sandwich/ Kopyor",
+      "harga": 9000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:33:30.534+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 921,
+      "nama": "Kurma",
+      "harga": 10000,
+      "kategori": "Snack",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:34:11.383+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 922,
+      "nama": "Golda",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:35:12.513+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 923,
+      "nama": "Wedang / Teh Tarik / Milo Per Pcs",
+      "harga": 2500,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:36:58.372+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 924,
+      "nama": "Cerelac",
+      "harga": 2500,
+      "kategori": "Rentengan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:37:19.841+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 925,
+      "nama": "Larutan Kaleng Anak",
+      "harga": 8000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:39:32.711+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 926,
+      "nama": "Mizone",
+      "harga": 6000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:39:55.444+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 927,
+      "nama": "Kukubima / Extrajoss",
+      "harga": 2000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:40:17.76+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 928,
+      "nama": "Baterai ABC Jam",
+      "harga": 3500,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:41:00.389+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 929,
+      "nama": "Baterai ABC Remote 1 Pack Isi 2",
+      "harga": 7000,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:41:23.15+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 930,
+      "nama": "Baterai ABC Besar",
+      "harga": 10000,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:41:39.95+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 931,
+      "nama": "MBK",
+      "harga": 5000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:42:01.165+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 932,
+      "nama": "Nutrijel Buah",
+      "harga": 3000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:42:22.912+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 933,
+      "nama": "Nutrijel Coklat",
+      "harga": 3500,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:42:46.787+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 934,
+      "nama": "Agar Swallow",
+      "harga": 5000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:42:58.215+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 935,
+      "nama": "Korek Magnet",
+      "harga": 3000,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:43:36.885+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 936,
+      "nama": "Korek Biasa",
+      "harga": 2500,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:43:51.676+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 937,
+      "nama": "Buku Tulis  / Gambar",
+      "harga": 3500,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:44:28.21+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 938,
+      "nama": "Obat Nyamuk Bulat",
+      "harga": 2000,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:45:00.522+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 939,
+      "nama": "Lem Korea",
+      "harga": 6000,
+      "kategori": "Alat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:46:12.52+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 940,
+      "nama": "Hot In Cream Besar",
+      "harga": 31000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:47:25.603+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 941,
+      "nama": "Hot In Cream Kecil",
+      "harga": 18000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:47:40.557+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 942,
+      "nama": "Adem Sari Serbuk",
+      "harga": 3000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:48:08.067+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 943,
+      "nama": "Handbody Lovely",
+      "harga": 12000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:48:33.932+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 944,
+      "nama": "Rapika Spray",
+      "harga": 10000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:48:52.025+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 945,
+      "nama": "Waku Nanas / Coklat / Stroberi / Ale / Dino / Mango / Loli",
+      "harga": 3000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:50:25.769+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 946,
+      "nama": "Waku Candy",
+      "harga": 5000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:50:55.981+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 947,
+      "nama": "FB Mochi",
+      "harga": 4000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:52:42.421+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 948,
+      "nama": "FB Cup",
+      "harga": 5000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:52:58.056+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 949,
+      "nama": "FB Cup Kukis",
+      "harga": 6000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:53:44.467+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 950,
+      "nama": "FB Cone Mini",
+      "harga": 3500,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:54:05.096+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 951,
+      "nama": "FB Jcone",
+      "harga": 6000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:54:28.327+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 952,
+      "nama": "FB Yakoo / Gula Aren",
+      "harga": 5000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:54:51.827+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 953,
+      "nama": "FB Boba / Choco Nut",
+      "harga": 6000,
+      "kategori": "Eskrim",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:55:14.349+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 954,
+      "nama": "Test",
+      "harga": 5000,
+      "kategori": "Test",
+      "stok": null,
+      "aktif": 0,
+      "created_at": "2026-02-13T14:36:37.716+00:00",
+      "updated_at": "2026-03-23T13:24:34.757Z"
+    },
+    {
+      "id": 955,
+      "nama": "Telur 1 Butir",
+      "harga": 2500,
+      "kategori": "Kebutuhan",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-12T06:20:17.256+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 956,
+      "nama": "So Klin 1 rtg",
+      "harga": 5500,
+      "kategori": "Sabun",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:20:01.438+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 957,
+      "nama": "Aqua 600ml",
+      "harga": 4000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T08:34:34.662+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 958,
+      "nama": "Magnum Filter 1/2",
+      "harga": 14000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-13T13:05:43.584+00:00",
+      "updated_at": "2026-02-20T14:50:26.594Z"
+    },
+    {
+      "id": 959,
+      "nama": "Teh Javana",
+      "harga": 3000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-02-27T11:10:48.714Z",
+      "updated_at": "2026-02-27T11:10:48.714Z"
+    },
+    {
+      "id": 960,
+      "nama": "contrexin 1 Lembar",
+      "harga": 3000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-03-14T11:45:39.506Z",
+      "updated_at": "2026-03-14T11:45:39.506Z"
+    },
+    {
+      "id": 961,
+      "nama": "Mie Kocok Bandung",
+      "harga": 4000,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-03-15T13:20:08.192Z",
+      "updated_at": "2026-03-15T13:20:08.192Z"
+    },
+    {
+      "id": 962,
+      "nama": "Sari Mie",
+      "harga": 3000,
+      "kategori": "Mie",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-03-16T14:17:25.363Z",
+      "updated_at": "2026-03-16T14:17:25.363Z"
+    },
+    {
+      "id": 963,
+      "nama": "Terigu 1/2",
+      "harga": 5500,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-03-16T14:18:00.679Z",
+      "updated_at": "2026-03-16T14:18:00.679Z"
+    },
+    {
+      "id": 964,
+      "nama": "Antangin Cair Dewasa",
+      "harga": 5000,
+      "kategori": "Obat",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-03-16T14:20:18.020Z",
+      "updated_at": "2026-03-16T14:20:18.020Z"
+    },
+    {
+      "id": 965,
+      "nama": "plastik 1/4",
+      "harga": 8000,
+      "kategori": "Sembako",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-03-23T13:24:19.996Z",
+      "updated_at": "2026-03-23T13:24:19.996Z"
+    },
+    {
+      "id": 966,
+      "nama": "Maizena Kecil",
+      "harga": 7000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-05-10T06:54:47.283Z",
+      "updated_at": "2026-05-10T06:54:47.283Z"
+    },
+    {
+      "id": 967,
+      "nama": "Maizena Besar",
+      "harga": 9000,
+      "kategori": "Bumbu",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-05-10T06:55:15.746Z",
+      "updated_at": "2026-05-10T06:55:15.746Z"
+    },
+    {
+      "id": 968,
+      "nama": "Zoda",
+      "harga": 7000,
+      "kategori": "Minuman",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-05-12T11:43:58.083Z",
+      "updated_at": "2026-05-12T11:44:14.328Z"
+    },
+    {
+      "id": 969,
+      "nama": "Aroma",
+      "harga": 24000,
+      "kategori": "Rokok",
+      "stok": null,
+      "aktif": 1,
+      "created_at": "2026-09-13T02:11:46.183Z",
+      "updated_at": "2026-09-13T12:33:32.304Z"
+    }
+  ]
+}

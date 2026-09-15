@@ -1,0 +1,345 @@
+/**
+ * ============================================
+ * SCREEN PENGATURAN - Clean
+ * ============================================
+ * - No emoji headers, plain text sections
+ * - Minimal verification badges
+ * - Material Symbols
+ */
+
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors, Spacing } from "../../constants/theme";
+import useAuthStore from "../../store/authStore";
+import usePrinterStore from "../../store/printerStore";
+import { MaterialIcon } from "../../components/MaterialIcon";
+import { showConfirm, showInfo } from "../../utils/alertHelper";
+
+export default function SettingsScreen() {
+  const router = useRouter();
+  const { logout } = useAuthStore();
+  const printerName = usePrinterStore((s) => s.printerName);
+
+  const [autoPrint, setAutoPrint] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(true);
+
+  useEffect(() => {
+    usePrinterStore.getState().loadSavedPrinter();
+  }, []);
+
+  const handleLogout = () => {
+    showConfirm({
+      title: "Keluar dari Akun",
+      message: "Keluar dari sesi kasir?",
+      confirmText: "Keluar",
+      destructive: true,
+      onConfirm: async () => {
+        await logout();
+        router.replace("/login");
+      },
+    });
+  };
+
+  return (
+    <SafeAreaView style={s.root}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+
+      {/* Header */}
+      <View style={s.header}>
+        <Text style={s.headerTitle}>Pengaturan</Text>
+        <TouchableOpacity
+          onPress={handleLogout}
+          style={s.headerMenuBtn}
+        >
+          <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        style={s.scroll}
+        contentContainerStyle={s.scrollInner}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Section: Identitas */}
+        <Text style={s.secLabel}>IDENTITAS TOKO</Text>
+        <View style={s.cardGroup}>
+          <View style={s.row}>
+            <Text style={s.rowLabel}>Nama usaha</Text>
+            <Text style={s.rowValue}>Warung POS Berkah</Text>
+          </View>
+          <View style={s.row}>
+            <Text style={s.rowLabel}>Pemilik</Text>
+            <Text style={s.rowValue}>Pak Budi Hartono</Text>
+          </View>
+          <View style={s.rowLast}>
+            <Text style={s.rowLabel}>Alamat</Text>
+            <Text style={s.rowValueSub}>
+              Jl. Cendrawasih No. 12, Pasar Minggu
+            </Text>
+          </View>
+        </View>
+
+        {/* Section: Hardware */}
+        <Text style={s.secLabel}>HARDWARE</Text>
+        <View style={s.cardGroup}>
+          <TouchableOpacity
+            style={s.row}
+            onPress={() => router.push("/printer")}
+          >
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Printer Bluetooth</Text>
+              <Text style={s.rowMeta}>
+                {printerName || "Belum dipilih"}
+              </Text>
+            </View>
+            <MaterialIcon
+              name="printer_outline"
+              size={18}
+              color="#1A1D1F"
+            />
+            <MaterialIcon name="arrow_forward" size={16} color="#94A3B8" />
+          </TouchableOpacity>
+          <View style={s.row}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Auto cetak struk</Text>
+              <Text style={s.rowMeta}>Nonaktif (cetak manual)</Text>
+            </View>
+            <Switch
+              value={autoPrint}
+              onValueChange={setAutoPrint}
+              disabled
+              trackColor={{ false: "#E2E8F0", true: "#1A1D1F" }}
+              thumbColor="#FFF"
+            />
+          </View>
+          <View style={s.row}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Buka laci uang</Text>
+              <Text style={s.rowMeta}>Trigger RJ-11 saat tunai</Text>
+            </View>
+            <Switch
+              value={openDrawer}
+              onValueChange={setOpenDrawer}
+              trackColor={{ false: "#E2E8F0", true: "#1A1D1F" }}
+              thumbColor="#FFF"
+            />
+          </View>
+        </View>
+
+        {/* Section: Kebijakan */}
+        <Text style={s.secLabel}>KEBIJAKAN KASIR</Text>
+        <View style={s.cardGroup}>
+          <View style={s.row}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>PPN</Text>
+              <Text style={s.rowMeta}>Usaha Mikro 0%</Text>
+            </View>
+          </View>
+          <View style={s.rowLast}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Pembulatan</Text>
+              <Text style={s.rowMeta}>Ke Rp 500 terdekat</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Section: Sinkronisasi */}
+        <Text style={s.secLabel}>SINKRONISASI</Text>
+        <View style={s.cardGroup}>
+          <View style={s.row}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Data lokal</Text>
+              <Text style={s.rowMeta}>
+                142 transaksi menunggu cloud
+              </Text>
+            </View>
+            <Text style={s.statusText}>Aman</Text>
+          </View>
+          <TouchableOpacity style={s.rowLast}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Backup data</Text>
+              <Text style={s.rowMeta}>Ekspor ke Excel / CSV</Text>
+            </View>
+            <MaterialIcon
+              name="arrow_forward"
+              size={16}
+              color="#94A3B8"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Section: Keamanan */}
+        <Text style={s.secLabel}>KEAMANAN</Text>
+        <View style={s.cardGroup}>
+          <View style={s.row}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>PIN otoritas</Text>
+              <Text style={s.rowMeta}>4 digit aktif</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={s.rowLast}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Ganti PIN</Text>
+            </View>
+            <MaterialIcon
+              name="arrow_forward"
+              size={16}
+              color="#94A3B8"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={s.actionGroup}>
+          <TouchableOpacity
+            style={s.btnSecondary}
+            onPress={() => showInfo("Tutup Shift", "Tutup shift kasir?")}
+          >
+            <Text style={s.btnSecondaryText}>Tutup Shift (Z-Report)</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={s.btnDanger} onPress={handleLogout}>
+            <MaterialIcon name="close" size={14} color="#DC2626" />
+            <Text style={s.btnDangerText}>Keluar dari Akun</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const s = StyleSheet.create({
+  root: { flex: 1, backgroundColor: "#F8F9FC" },
+
+  // Header
+  header: {
+    height: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#191C1E",
+  },
+  headerMenuBtn: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // Scroll
+  scroll: { flex: 1 },
+  scrollInner: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 60,
+  },
+
+  // Section Label
+  secLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#94A3B8",
+    letterSpacing: 0.8,
+    marginTop: 20,
+    marginBottom: 8,
+  },
+
+  // Card Group (each section)
+  cardGroup: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#F1F5F9",
+  },
+  rowLast: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+  },
+  rowInfo: {
+    flex: 1,
+    marginRight: 12,
+  },
+  rowLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#191C1E",
+  },
+  rowMeta: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 2,
+  },
+  rowValue: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#64748B",
+  },
+  rowValueSub: {
+    fontSize: 12,
+    color: "#94A3B8",
+    textAlign: "right",
+    flex: 1,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#059669",
+  },
+
+  // Actions
+  actionGroup: {
+    marginTop: 24,
+    gap: 8,
+  },
+  btnSecondary: {
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnSecondaryText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#191C1E",
+  },
+  btnDanger: {
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 6,
+  },
+  btnDangerText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#DC2626",
+  },
+});

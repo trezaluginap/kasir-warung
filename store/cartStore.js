@@ -19,6 +19,7 @@
 
 import { create } from "zustand";
 import { simpanTransaksi } from "../database/service";
+import { useRecentStore } from "./recentStore";
 
 /**
  * Store utama untuk keranjang belanja
@@ -108,6 +109,8 @@ const useCartStore = create((set, get) => ({
           id: produk.id,
           nama: produk.nama,
           harga: produk.harga,
+          kategori: produk.kategori,
+          foto: produk.foto,
           qty: 1,
           uniqueId,
         },
@@ -230,12 +233,28 @@ const useCartStore = create((set, get) => ({
             qty: item.qty,
             harga: item.harga,
             subtotal: item.qty * item.harga,
+            foto: item.foto,
+            kategori: item.kategori,
           };
         }
       });
 
       // Simpan ke database
       const transaksi = await simpanTransaksi(totalHarga, daftarBarang);
+
+      // Update recent store untuk barang terakhir dibeli
+      const recentStore = useRecentStore.getState();
+      items.forEach((item) => {
+        if (item.tipe === "produk" && item.id) {
+          recentStore.addRecent({
+            id: item.id,
+            nama: item.nama,
+            harga: item.harga,
+            kategori: item.kategori,
+            foto: item.foto,
+          });
+        }
+      });
 
       // Kosongkan keranjang setelah berhasil
       get().clearKeranjang();

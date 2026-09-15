@@ -1,0 +1,67 @@
+/**
+ * Icon Registry - maps semantic names to MaterialCommunityIcons glyphs
+ * Full glyph list: https://materialdesignicons.com (expo/vector-icons)
+ */
+
+export const ICONS = {
+  // Tab bar
+  point_of_sale: "point-of-sale",
+  inventory_2: "archive",
+  receipt_long: "receipt-text",
+  tune: "tune-vertical",
+
+  // Search & actions
+  search: "magnify",
+  qr_code_scanner: "barcode-scan",
+  close: "close",
+  add: "plus",
+  remove: "minus",
+  delete: "trash-can-outline",
+  edit: "pencil-outline",
+  refresh: "refresh",
+  print: "printer",
+  printer_outline: "printer-outline",
+  share: "share-variant",
+  arrow_forward: "arrow-right",
+  arrow_back: "arrow-left",
+  account_circle: "account-circle-outline",
+  shopping_bag: "shopping-outline",
+  shopping: "shopping",
+  plus_circle: "plus-circle-outline",
+  minus_circle: "minus-circle-outline",
+  store: "storefront",
+  cloud: "cloud-outline",
+  lock: "lock-outline",
+  info: "information-outline",
+  check: "check-circle-outline",
+  check_circle: "check-circle",
+  help_circle: "help-circle-outline",
+  warning: "alert-circle-outline",
+  backspace: "backspace",
+  list: "format-list-bulleted",
+  filter: "filter-outline",
+  calendar: "calendar",
+  insights: "chart-line",
+  magnify_plus: "magnify-plus",
+  magnify_minus: "magnify-minus",
+  barcode: "barcode",
+  cash: "cash-multiple",
+  card: "credit-card-outline",
+  book: "book-open-page-variant-outline",
+  flashlight: "flashlight",
+  flashlight_off: "flashlight-off",
+
+  // Kategori fallback
+  Makanan: "noodles",
+  Minuman: "cup-water",
+  Snack: "cookie-outline",
+  Rokok: "smoking-off",
+  Kebutuhan: "bag-personal-outline",
+  Umum: "package-variant",
+  cat_makanan: "noodles",
+  cat_minuman: "cup-water",
+  cat_snack: "cookie-outline",
+  cat_rokok: "smoking-off",
+  cat_kebutuhan: "bag-personal-outline",
+  cat_umum: "package-variant",
+};

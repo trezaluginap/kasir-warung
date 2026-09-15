@@ -1,17 +1,18 @@
 /**
  * ============================================
- * SCREEN PRODUK - CRUD
+ * SCREEN KATALOG PRODUK - Clean
  * ============================================
- *
- * Compact modern product management with efficient layout
+ * - Minimal header (no subtitle)
+ * - Plain product list (no category tag spam)
+ * - Material Symbols (no emoji)
+ * - FAB for add product
  */
 
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  Alert,
+  FlatList,
   Modal,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -20,13 +21,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  BorderRadius,
-  Colors,
-  Shadows,
-  Spacing,
-  Typography,
-} from "../../constants/theme";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
+import { File, Paths } from "expo-file-system";
+import { Colors, Spacing } from "../../constants/theme";
 import {
   ambilKategori,
   ambilSemuaProduk,
@@ -35,11 +33,16 @@ import {
   updateProduk,
 } from "../../database/productService";
 import useAuthStore from "../../store/authStore";
+import { MaterialIcon } from "../../components/MaterialIcon";
+import { ProductThumb } from "../../components/ProductThumb";
+import BarcodeScannerModal from "../../components/BarcodeScannerModal";
+import { showWarning, showError, showConfirm } from "../../utils/alertHelper";
 
 export default function ProductsScreen() {
   const router = useRouter();
   const { logout } = useAuthStore();
-  const [produkList, setProdukList] = useState([]);
+
+  const [allProdukList, setAllProdukList] = useState([]);
   const [kategoriList, setKategoriList] = useState(["Semua"]);
   const [selectedKategori, setSelectedKategori] = useState("Semua");
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,9 +51,14 @@ export default function ProductsScreen() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+
   const [nama, setNama] = useState("");
   const [harga, setHarga] = useState("");
-  const [kategori, setKategori] = useState("");
+  const [kategori, setKategori] = useState("Makanan");
+  const [stok, setStok] = useState("24");
+  const [foto, setFoto] = useState("");
+  const [barcode, setBarcode] = useState("");
 
   const loadKategori = useCallback(async () => {
     try {
@@ -63,41 +71,57 @@ export default function ProductsScreen() {
 
   const loadProduk = useCallback(async () => {
     try {
-      const options = { aktifOnly: true };
-
-      if (selectedKategori !== "Semua") {
-        options.kategori = selectedKategori;
-      }
-
-      if (searchQuery.trim()) {
-        options.search = searchQuery.trim();
-      }
-
-      const list = await ambilSemuaProduk(options);
-      setProdukList(list);
+      const list = await ambilSemuaProduk({ aktifOnly: true });
+      setAllProdukList(list);
     } catch (error) {
       console.error("Error load produk:", error);
-      Alert.alert("Error", "Gagal load produk");
     }
-  }, [selectedKategori, searchQuery]);
+  }, []);
 
-  const loadAll = useCallback(async () => {
-    await loadKategori();
-    await loadProduk();
+  useEffect(() => {
+    // Async DB fetches; setState occurs post-await, not synchronously.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadKategori();
+    loadProduk();
   }, [loadKategori, loadProduk]);
 
-  useEffect(() => {
-    loadAll();
-  }, [loadAll]);
+  // Filter — memoized: hanya re-run saat allProdukList / kategori / search berubah
+  const filteredList = useMemo(() => {
+    let list = allProdukList;
+    if (selectedKategori !== "Semua") {
+      list = list.filter((p) => p.kategori === selectedKategori);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (p) =>
+          p.nama.toLowerCase().includes(q) ||
+          (p.kategori && p.kategori.toLowerCase().includes(q)),
+      );
+    }
+    return list;
+  }, [allProdukList, selectedKategori, searchQuery]);
 
-  useEffect(() => {
-    loadProduk();
-  }, [loadProduk]);
+  const formatRupiah = (n) => `Rp ${(n || 0).toLocaleString("id-ID")}`;
+
+  const formatCurrencyInput = (text) => {
+    const numbers = String(text || "").replace(/\D/g, "");
+    if (numbers === "") return "";
+    return parseInt(numbers, 10).toLocaleString("id-ID");
+  };
+
+  const parseCurrencyInput = (text) => {
+    const numbers = String(text || "").replace(/\D/g, "");
+    return numbers === "" ? 0 : parseInt(numbers, 10);
+  };
 
   const resetForm = () => {
     setNama("");
     setHarga("");
-    setKategori("");
+    setKategori("Makanan");
+    setStok("24");
+    setFoto("");
+    setBarcode("");
     setEditingId(null);
     setIsEditMode(false);
   };
@@ -110,7 +134,10 @@ export default function ProductsScreen() {
   const openEditModal = (produk) => {
     setNama(produk.nama);
     setHarga(formatCurrencyInput(String(produk.harga)));
-    setKategori(produk.kategori || "");
+    setKategori(produk.kategori || "Makanan");
+    setStok(produk.stok ? String(produk.stok) : "24");
+    setFoto(produk.foto || "");
+    setBarcode(produk.barcode || "");
     setEditingId(produk.id);
     setIsEditMode(true);
     setShowModal(true);
@@ -118,744 +145,703 @@ export default function ProductsScreen() {
 
   const handleSave = async () => {
     if (!nama.trim()) {
-      Alert.alert("Validasi", "Nama produk wajib diisi");
+      showWarning("Nama wajib diisi", "Silakan isi nama produk terlebih dahulu.");
       return;
     }
-
-    const hargaNumber = parseCurrencyInput(harga);
-    if (hargaNumber <= 0) {
-      Alert.alert("Validasi", "Harga tidak valid");
+    const hargaNum = parseCurrencyInput(harga);
+    if (hargaNum <= 0) {
+      showWarning("Harga tidak valid", "Harga jual harus lebih dari 0.");
       return;
     }
-
+    const stokNum = parseInt(stok) || 0;
+    const fotoVal = foto.trim() ? foto.trim() : null;
+    const barcodeVal = barcode.trim() ? barcode.trim() : null;
     try {
       if (isEditMode && editingId) {
         await updateProduk(editingId, {
           nama: nama.trim(),
-          harga: hargaNumber,
-          kategori: kategori.trim() || "Umum",
+          harga: hargaNum,
+          kategori: kategori.trim() || "Makanan",
+          foto: fotoVal,
+          barcode: barcodeVal,
         });
-        Alert.alert("Sukses", "Produk berhasil diupdate");
       } else {
         await tambahProduk({
           nama: nama.trim(),
-          harga: hargaNumber,
-          kategori: kategori.trim() || "Umum",
+          harga: hargaNum,
+          kategori: kategori.trim() || "Makanan",
+          stok: stokNum,
+          foto: fotoVal,
+          barcode: barcodeVal,
         });
-        Alert.alert("Sukses", "Produk berhasil ditambahkan");
       }
-
       setShowModal(false);
       resetForm();
-      await loadAll();
+      await loadProduk();
     } catch (error) {
-      console.error("Error simpan produk:", error);
-      Alert.alert("Error", "Gagal menyimpan produk");
+      showError("Gagal menyimpan", "Terjadi kesalahan saat menyimpan produk.");
     }
   };
 
   const handleDelete = (produk) => {
-    Alert.alert("Konfirmasi", `Hapus produk ${produk.nama}?`, [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Hapus",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await hapusProduk(produk.id);
-            await loadAll();
-          } catch (error) {
-            console.error("Error hapus produk:", error);
-            Alert.alert("Error", "Gagal menghapus produk");
-          }
-        },
+    showConfirm({
+      title: "Hapus Produk",
+      message: `Yakin ingin menghapus "${produk.nama}"? Tindakan ini tidak dapat dibatalkan.`,
+      confirmText: "Hapus",
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await hapusProduk(produk.id);
+          await loadProduk();
+        } catch (error) {
+          showError("Gagal menghapus", "Terjadi kesalahan saat menghapus produk.");
+        }
       },
-    ]);
+    });
   };
 
-  const formatRupiah = (angka) => {
-    return `Rp ${angka.toLocaleString("id-ID")}`;
-  };
+  const handlePickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (!permissionResult.granted) {
+      showWarning(
+        "Izin Diperlukan",
+        "Aplikasi membutuhkan akses ke galeri foto untuk menambahkan gambar produk.",
+      );
+      return;
+    }
 
-  const formatCurrencyInput = (text) => {
-    const numbers = text.replace(/\D/g, "");
-    if (numbers === "") return "";
-    const formatted = parseInt(numbers, 10).toLocaleString("id-ID");
-    return formatted;
-  };
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
 
-  const parseCurrencyInput = (text) => {
-    const numbers = text.replace(/\D/g, "");
-    return numbers === "" ? 0 : parseInt(numbers, 10);
-  };
+    if (!result.canceled && result.assets && result.assets[0]) {
+      const uri = result.assets[0].uri;
+      const fileName = `product_${Date.now()}.jpg`;
 
-  const handleLogout = () => {
-    Alert.alert("Konfirmasi", "Keluar dari akun?", [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Keluar",
-        style: "destructive",
-        onPress: async () => {
-          await logout();
-          router.replace("/login");
-        },
-      },
-    ]);
+      try {
+        const source = new File(uri);
+        const dest = new File(Paths.document, fileName);
+        await source.copy(dest, { overwrite: true });
+        setFoto(dest.uri);
+      } catch (error) {
+        console.error("Error copy image:", error);
+        showError("Gagal menyimpan foto", "Terjadi kesalahan saat menyalin foto.");
+      }
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={Colors.primary.main}
-      />
+    <SafeAreaView style={s.root}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* Compact Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.headerIcon}>📦</Text>
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.headerTitle}>Produk</Text>
-              <Text style={styles.headerSubtitle}>
-                {produkList.length} produk
-              </Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={handleLogout}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.logoutIcon}>→</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Header */}
+      <View style={s.header}>
+        <Text style={s.headerTitle}>Katalog Produk</Text>
+        <TouchableOpacity
+          onPress={() => router.replace("/(tabs)")}
+          style={s.headerMenuBtn}
+        >
+          <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+        </TouchableOpacity>
       </View>
 
-      {/* Search & Add Section */}
-      <View style={styles.actionSection}>
-        <View style={styles.searchContainer}>
-          <Text style={styles.searchIcon}>🔍</Text>
+      <ScrollView
+        style={s.scroll}
+        contentContainerStyle={s.scrollInner}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Counter */}
+        <Text style={s.counterText}>
+          {allProdukList.length} produk terdaftar
+        </Text>
+
+        {/* Search Bar */}
+        <View style={s.searchBox}>
+          <MaterialIcon name="search" size={16} color="#94A3B8" />
           <TextInput
-            style={styles.searchInput}
+            style={s.searchInput}
             placeholder="Cari produk..."
-            placeholderTextColor={Colors.text.disabled}
+            placeholderTextColor="#94A3B8"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
-            <TouchableOpacity
-              onPress={() => setSearchQuery("")}
-              style={styles.clearButton}
-            >
-              <Text style={styles.clearButtonText}>×</Text>
+            <TouchableOpacity onPress={() => setSearchQuery("")}>
+              <MaterialIcon name="close" size={16} color="#94A3B8" />
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={openAddModal}
-          activeOpacity={0.85}
+
+        {/* Category Pills */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.catScroll}
+          style={s.catContainer}
         >
-          <Text style={styles.addIcon}>+</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Category Pills */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryScroll}
-        contentContainerStyle={styles.categoryContainer}
-      >
-        {kategoriList.map((item) => (
-          <TouchableOpacity
-            key={item}
-            style={[
-              styles.categoryPill,
-              selectedKategori === item && styles.categoryPillActive,
-            ]}
-            onPress={() => setSelectedKategori(item)}
-            activeOpacity={0.7}
-          >
-            <Text
-              style={[
-                styles.categoryPillText,
-                selectedKategori === item && styles.categoryPillTextActive,
-              ]}
+          {kategoriList.map((kat) => (
+            <TouchableOpacity
+              key={kat}
+              style={[s.catPill, selectedKategori === kat && s.catPillOn]}
+              onPress={() => setSelectedKategori(kat)}
+              activeOpacity={0.7}
             >
-              {item}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* Product List */}
-      <ScrollView
-        style={styles.productContainer}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.productScrollContent}
-      >
-        {produkList.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>{searchQuery ? "🔍" : "📦"}</Text>
-            <Text style={styles.emptyTitle}>
-              {searchQuery ? "Tidak Ditemukan" : "Belum Ada Produk"}
-            </Text>
-            <Text style={styles.emptySubtext}>
-              {searchQuery
-                ? "Coba kata kunci lain"
-                : "Mulai tambahkan produk pertama Anda"}
-            </Text>
-            {!searchQuery && (
-              <TouchableOpacity
-                style={styles.emptyActionButton}
-                onPress={openAddModal}
-                activeOpacity={0.8}
+              <Text
+                style={[
+                  s.catPillText,
+                  selectedKategori === kat && s.catPillTextOn,
+                ]}
               >
-                <Text style={styles.emptyActionText}>+ Tambah Produk</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        ) : (
-          <View style={styles.gridContainer}>
-            {produkList.map((produk) => (
-              <View key={produk.id} style={styles.productCard}>
-                {/* Compact Card Header */}
-                <View style={styles.productHeader}>
-                  <Text style={styles.productName} numberOfLines={2}>
-                    {produk.nama}
-                  </Text>
-                  <View style={styles.categoryTag}>
-                    <Text style={styles.categoryTagText}>
-                      {produk.kategori || "Umum"}
-                    </Text>
-                  </View>
-                </View>
+                {kat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
-                {/* Price */}
-                <Text style={styles.productPrice}>
-                  {formatRupiah(produk.harga)}
+        {/* Product List — FlatList: virtualisasi, render hanya item yang terlihat */}
+        <FlatList
+          data={filteredList}
+          keyExtractor={(item) => String(item.id)}
+          contentContainerStyle={[s.scrollInner, s.productList]}
+          style={s.scroll}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          ListEmptyComponent={
+            <View style={s.emptyBox}>
+              <MaterialIcon name="inventory_2" size={28} color="#CBD5E1" />
+              <Text style={s.emptyTitle}>Belum ada produk</Text>
+              <Text style={s.emptySub}>Tap + untuk tambah</Text>
+            </View>
+          }
+          renderItem={({ item, index: i, separators }) => (
+            <View key={String(item.id)} style={s.productRow}>
+              <ProductThumb
+                foto={item.foto}
+                kategori={item.kategori}
+                size={40}
+                radius={8}
+              />
+              <View style={s.productLeft}>
+                <Text style={s.productName} numberOfLines={1}>
+                  {item.nama}
                 </Text>
-
-                {/* Actions */}
-                <View style={styles.productFooter}>
+                <Text style={s.productMeta}>
+                  {item.kategori || "Umum"} • Stok {item.stok || 0}
+                </Text>
+              </View>
+              <View style={s.productRight}>
+                <Text style={s.productPrice}>{formatRupiah(item.harga)}</Text>
+                <View style={s.actionRow}>
                   <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => openEditModal(produk)}
-                    activeOpacity={0.7}
+                    style={s.btnAction}
+                    onPress={() => openEditModal(item)}
                   >
-                    <Text style={styles.actionButtonText}>✏️</Text>
+                    <MaterialIcon name="edit" size={14} color="#64748B" />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.actionButton, styles.deleteActionButton]}
-                    onPress={() => handleDelete(produk)}
-                    activeOpacity={0.7}
+                    style={s.btnAction}
+                    onPress={() => handleDelete(item)}
                   >
-                    <Text style={styles.deleteActionText}>🗑️</Text>
+                    <MaterialIcon name="delete" size={14} color="#DC2626" />
                   </TouchableOpacity>
                 </View>
               </View>
-            ))}
-          </View>
-        )}
+            </View>
+          )}
+        />
       </ScrollView>
 
-      {/* Modal */}
+      {/* FAB Tambah Produk */}
+      <TouchableOpacity
+        style={s.fab}
+        onPress={openAddModal}
+        activeOpacity={0.85}
+      >
+        <MaterialIcon name="add" size={26} color="#FFF" />
+      </TouchableOpacity>
+
+      {/* Form Modal */}
       <Modal
         visible={showModal}
-        transparent={true}
+        transparent
         animationType="slide"
         onRequestClose={() => setShowModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            {/* Modal Header */}
-            <View style={styles.modalHeader}>
-              <View style={styles.modalHeaderContent}>
-                <Text style={styles.modalTitle}>
-                  {isEditMode ? "Edit Produk" : "Tambah Produk"}
-                </Text>
-                <Text style={styles.modalSubtitle}>
-                  {isEditMode
-                    ? "Perbarui informasi produk"
-                    : "Isi detail produk baru"}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={styles.modalCloseButton}
-                onPress={() => {
-                  setShowModal(false);
-                  resetForm();
-                }}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.modalCloseIcon}>×</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={s.modalOverlay}>
+          <View style={s.modalSheet}>
+            <View style={s.modalHandle} />
+            <Text style={s.modalTitle}>
+              {isEditMode ? "Edit Produk" : "Tambah Produk"}
+            </Text>
 
-            {/* Modal Form */}
-            <ScrollView style={styles.modalBody}>
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Nama Produk</Text>
-                <View style={styles.inputWrapper}>
-                  <Text style={styles.inputIcon}>🏷️</Text>
+            <ScrollView
+              style={s.modalForm}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>NAMA PRODUK</Text>
+                <View style={s.fieldInput}>
                   <TextInput
-                    style={styles.textInput}
-                    placeholder="Masukkan nama produk"
-                    placeholderTextColor={Colors.text.disabled}
+                    style={s.fieldText}
+                    placeholder="Contoh: Indomie Goreng"
+                    placeholderTextColor="#CBD5E1"
                     value={nama}
                     onChangeText={setNama}
                   />
                 </View>
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Harga</Text>
-                <View style={styles.inputWrapper}>
-                  <Text style={styles.inputIcon}>💰</Text>
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>HARGA JUAL</Text>
+                <View style={s.fieldInput}>
+                  <Text style={s.fieldRp}>Rp</Text>
                   <TextInput
-                    style={styles.textInput}
+                    style={[s.fieldText, s.fieldTextBold]}
                     placeholder="0"
-                    placeholderTextColor={Colors.text.disabled}
+                    placeholderTextColor="#CBD5E1"
                     keyboardType="numeric"
                     value={harga}
-                    onChangeText={(text) => setHarga(formatCurrencyInput(text))}
+                    onChangeText={(t) => setHarga(formatCurrencyInput(t))}
                   />
                 </View>
-                {harga && (
-                  <Text style={styles.inputHelper}>
-                    {formatRupiah(parseCurrencyInput(harga))}
-                  </Text>
-                )}
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Kategori</Text>
-                <View style={styles.inputWrapper}>
-                  <Text style={styles.inputIcon}>📁</Text>
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>KATEGORI</Text>
+                <View style={s.catChipRow}>
+                  {["Makanan", "Minuman", "Rokok", "Snack", "Kebutuhan"].map(
+                    (c) => (
+                      <TouchableOpacity
+                        key={c}
+                        style={[
+                          s.catChip,
+                          kategori === c && s.catChipOn,
+                        ]}
+                        onPress={() => setKategori(c)}
+                      >
+                        <Text
+                          style={[
+                            s.catChipText,
+                            kategori === c && s.catChipTextOn,
+                          ]}
+                        >
+                          {c}
+                        </Text>
+                      </TouchableOpacity>
+                    ),
+                  )}
+                </View>
+              </View>
+
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>STOK</Text>
+                <View style={s.fieldInput}>
                   <TextInput
-                    style={styles.textInput}
-                    placeholder="Masukkan kategori (opsional)"
-                    placeholderTextColor={Colors.text.disabled}
-                    value={kategori}
-                    onChangeText={setKategori}
+                    style={s.fieldText}
+                    placeholder="24"
+                    placeholderTextColor="#CBD5E1"
+                    keyboardType="numeric"
+                    value={stok}
+                    onChangeText={setStok}
                   />
                 </View>
+              </View>
+
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>BARCODE (OPSIONAL)</Text>
+                <View style={s.fieldInput}>
+                  <TextInput
+                    style={s.fieldText}
+                    placeholder="Nomor barcode produk"
+                    placeholderTextColor="#CBD5E1"
+                    keyboardType="numeric"
+                    value={barcode}
+                    onChangeText={setBarcode}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowBarcodeScanner(true)}
+                    style={s.btnScanBarcode}
+                  >
+                    <MaterialIcon
+                      name="qr_code_scanner"
+                      size={18}
+                      color="#1A1D1F"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>FOTO PRODUK (OPSIONAL)</Text>
+                <TouchableOpacity style={s.btnPickPhoto} onPress={handlePickImage}>
+                  <MaterialIcon name="image" size={18} color="#64748B" />
+                  <Text style={s.btnPickPhotoText}>Pilih dari Galeri</Text>
+                </TouchableOpacity>
+                {foto ? (
+                  <View style={s.photoPreview}>
+                    <ProductThumb foto={foto} kategori={kategori} size={60} />
+                    <Text style={s.photoPreviewText} numberOfLines={1}>
+                      {foto.length > 40 ? `...${foto.slice(-37)}` : foto}
+                    </Text>
+                    <TouchableOpacity onPress={() => setFoto("")}>
+                      <MaterialIcon name="close" size={16} color="#DC2626" />
+                    </TouchableOpacity>
+                  </View>
+                ) : null}
               </View>
             </ScrollView>
 
-            {/* Modal Actions */}
-            <View style={styles.modalFooter}>
+            <View style={s.modalActions}>
               <TouchableOpacity
-                style={[styles.modalActionButton, styles.cancelButton]}
-                onPress={() => {
-                  setShowModal(false);
-                  resetForm();
-                }}
-                activeOpacity={0.8}
+                style={s.btnCancel}
+                onPress={() => setShowModal(false)}
               >
-                <Text style={styles.cancelButtonText}>Batal</Text>
+                <Text style={s.btnCancelText}>Batal</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalActionButton, styles.saveButton]}
-                onPress={handleSave}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.saveButtonText}>
-                  {isEditMode ? "Update" : "Simpan"}
+              <TouchableOpacity style={s.btnSave} onPress={handleSave}>
+                <Text style={s.btnSaveText}>
+                  {isEditMode ? "Simpan" : "Tambah"}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
+
+      {/* Barcode Scanner Modal (input kode) */}
+      <BarcodeScannerModal
+        visible={showBarcodeScanner}
+        onClose={() => setShowBarcodeScanner(false)}
+        onScanCode={(code) => setBarcode(code)}
+      />
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F9FD",
-  },
+const s = StyleSheet.create({
+  root: { flex: 1, backgroundColor: "#F8F9FC" },
 
-  // Compact Header
+  // Header
   header: {
-    backgroundColor: Colors.primary.main,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    borderBottomLeftRadius: BorderRadius.xl,
-    borderBottomRightRadius: BorderRadius.xl,
-    ...Shadows.md,
-  },
-  headerContent: {
+    height: 52,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  headerIcon: {
-    fontSize: 24,
-  },
-  headerTextContainer: {
-    gap: 2,
+    paddingHorizontal: 20,
+    backgroundColor: "#FFFFFF",
   },
   headerTitle: {
-    fontSize: Typography.fontSize.xl,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.contrast,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#191C1E",
   },
-  headerSubtitle: {
-    fontSize: Typography.fontSize.xs,
-    color: Colors.primary.contrast,
-    opacity: 0.85,
-  },
-  logoutButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.lg,
+  headerMenuBtn: {
+    width: 32,
+    height: 32,
     justifyContent: "center",
     alignItems: "center",
   },
-  logoutIcon: {
-    fontSize: 20,
-    color: Colors.primary.contrast,
-    fontWeight: Typography.fontWeight.bold,
+
+  // Scroll
+  scroll: { flex: 1 },
+  scrollInner: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 100,
   },
 
-  // Action Section
-  actionSection: {
-    flexDirection: "row",
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.sm,
-    gap: Spacing.sm,
+  // Counter
+  counterText: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginBottom: 12,
   },
-  searchContainer: {
-    flex: 1,
+
+  // Search
+  searchBox: {
     flexDirection: "row",
     alignItems: "center",
+    height: 44,
     backgroundColor: "#FFFFFF",
-    borderRadius: BorderRadius.lg,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.08)",
-    ...Shadows.sm,
-  },
-  searchIcon: {
-    fontSize: 16,
-    marginRight: Spacing.xs,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    gap: 8,
+    marginBottom: 12,
   },
   searchInput: {
     flex: 1,
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.primary,
-    paddingVertical: Spacing.xs,
-  },
-  clearButton: {
-    width: 24,
-    height: 24,
-    borderRadius: BorderRadius.md,
-    backgroundColor: "#F5F5F5",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  clearButtonText: {
-    fontSize: 20,
-    color: Colors.text.secondary,
-    lineHeight: 20,
-  },
-  addButton: {
-    backgroundColor: Colors.primary.main,
-    width: 44,
-    height: 44,
-    borderRadius: BorderRadius.lg,
-    justifyContent: "center",
-    alignItems: "center",
-    ...Shadows.md,
-  },
-  addIcon: {
-    fontSize: 24,
-    color: Colors.primary.contrast,
-    fontWeight: Typography.fontWeight.bold,
-    lineHeight: 24,
+    fontSize: 14,
+    color: "#191C1E",
+    padding: 0,
   },
 
   // Category Pills
-  categoryScroll: {
-    flexGrow: 0,
-  },
-  categoryContainer: {
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.xs,
-    gap: Spacing.xs,
-  },
-  categoryPill: {
+  catContainer: { marginBottom: 20 },
+  catScroll: { gap: 6 },
+  catPill: {
+    height: 32,
+    paddingHorizontal: 14,
+    borderRadius: 16,
     backgroundColor: "#FFFFFF",
-    paddingVertical: 6,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.full,
-    marginRight: Spacing.xs,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.08)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  categoryPillActive: {
-    backgroundColor: Colors.primary.main,
-    borderColor: Colors.primary.main,
+  catPillOn: {
+    backgroundColor: "#1A1D1F",
   },
-  categoryPillText: {
-    color: Colors.text.secondary,
-    fontSize: Typography.fontSize.xs,
-    fontWeight: Typography.fontWeight.semibold,
+  catPillText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#64748B",
   },
-  categoryPillTextActive: {
-    color: Colors.primary.contrast,
-    fontWeight: Typography.fontWeight.bold,
+  catPillTextOn: {
+    color: "#FFF",
+    fontWeight: "700",
   },
 
   // Product List
-  productContainer: {
-    flex: 1,
-    marginTop: Spacing.sm,
-  },
-  productScrollContent: {
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.xl,
-  },
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-
-  // Empty State
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: Spacing["3xl"],
-    paddingHorizontal: Spacing.xl,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    opacity: 0.4,
-    marginBottom: Spacing.md,
-  },
-  emptyTitle: {
-    fontSize: Typography.fontSize.lg,
-    color: Colors.text.primary,
-    fontWeight: Typography.fontWeight.bold,
-    marginBottom: Spacing.xs,
-    textAlign: "center",
-  },
-  emptySubtext: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.secondary,
-    textAlign: "center",
-    marginBottom: Spacing.lg,
-  },
-  emptyActionButton: {
-    backgroundColor: Colors.primary.main,
-    paddingHorizontal: Spacing.xl,
-    paddingVertical: Spacing.sm + 4,
-    borderRadius: BorderRadius.lg,
-    ...Shadows.md,
-  },
-  emptyActionText: {
-    color: Colors.primary.contrast,
-    fontSize: Typography.fontSize.sm,
-    fontWeight: Typography.fontWeight.bold,
-  },
-
-  // Compact Product Card
-  productCard: {
+  productList: {
     backgroundColor: "#FFFFFF",
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    marginBottom: Spacing.sm + 4,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.06)",
-    ...Shadows.sm,
-    width: "48.5%",
+    borderRadius: 12,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
   },
-  productHeader: {
-    marginBottom: Spacing.sm,
-    gap: Spacing.xs,
+  productRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    gap: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#F1F5F9",
   },
+  productLeft: { flex: 1, marginRight: 12 },
   productName: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
-    lineHeight: 20,
-    marginBottom: 4,
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#191C1E",
   },
-  categoryTag: {
-    alignSelf: "flex-start",
-    backgroundColor: "#F0F3FF",
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
+  productMeta: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 2,
   },
-  categoryTagText: {
-    fontSize: 10,
-    color: Colors.primary.main,
-    fontWeight: Typography.fontWeight.bold,
+  productRight: {
+    alignItems: "flex-end",
+    gap: 6,
+    marginLeft: "auto",
   },
   productPrice: {
-    fontSize: Typography.fontSize.lg,
-    color: Colors.primary.main,
-    fontWeight: Typography.fontWeight.bold,
-    marginBottom: Spacing.sm,
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#191C1E",
   },
-  productFooter: {
+  actionRow: {
     flexDirection: "row",
-    gap: Spacing.xs,
-  },
-  actionButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F0F3FF",
-    paddingVertical: Spacing.xs + 2,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    borderColor: Colors.primary.main,
-  },
-  deleteActionButton: {
-    backgroundColor: "#FFF0F0",
-    borderColor: Colors.accent.error,
-  },
-  actionButtonText: {
-    fontSize: 16,
-  },
-  deleteActionText: {
-    fontSize: 16,
-  },
-
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContainer: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: BorderRadius["3xl"],
-    borderTopRightRadius: BorderRadius["3xl"],
-    maxHeight: "85%",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    paddingTop: Spacing.xl,
-    paddingHorizontal: Spacing.xl,
-    paddingBottom: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(0, 0, 0, 0.05)",
-  },
-  modalHeaderContent: {
-    flex: 1,
     gap: 4,
   },
+  btnAction: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // Empty
+  emptyBox: {
+    alignItems: "center",
+    paddingVertical: 48,
+    gap: 4,
+  },
+  emptyTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#94A3B8",
+  },
+  emptySub: {
+    fontSize: 12,
+    color: "#CBD5E1",
+  },
+
+  // FAB
+  fab: {
+    position: "absolute",
+    bottom: 80,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#1A1D1F",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+
+  // Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalSheet: {
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: "85%",
+  },
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#E2E8F0",
+    borderRadius: 2,
+    alignSelf: "center",
+    marginBottom: 16,
+  },
   modalTitle: {
-    fontSize: Typography.fontSize["2xl"],
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
-  },
-  modalSubtitle: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.secondary,
-    marginTop: 4,
-  },
-  modalCloseButton: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: "#F5F5F5",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: Spacing.md,
-  },
-  modalCloseIcon: {
-    fontSize: 28,
-    color: Colors.text.secondary,
-    lineHeight: 28,
-  },
-  modalBody: {
-    padding: Spacing.xl,
-  },
-  inputGroup: {
-    marginBottom: Spacing.lg,
-  },
-  inputLabel: {
-    fontSize: Typography.fontSize.sm,
-    fontWeight: Typography.fontWeight.semibold,
-    color: Colors.text.primary,
-    marginBottom: Spacing.xs,
-  },
-  inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F8F9FD",
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1.5,
-    borderColor: "rgba(0, 0, 0, 0.08)",
-    paddingHorizontal: Spacing.md,
-    gap: Spacing.sm,
-  },
-  inputIcon: {
     fontSize: 18,
-    opacity: 0.6,
+    fontWeight: "700",
+    color: "#191C1E",
+    marginBottom: 16,
   },
-  textInput: {
-    flex: 1,
-    fontSize: Typography.fontSize.base,
-    color: Colors.text.primary,
-    paddingVertical: Spacing.md,
+  modalForm: { maxHeight: 380 },
+  fieldGroup: { marginBottom: 14 },
+  fieldLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#94A3B8",
+    letterSpacing: 0.5,
+    marginBottom: 6,
   },
-  inputHelper: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.primary.main,
-    fontWeight: Typography.fontWeight.semibold,
-    marginTop: 4,
-    marginLeft: 4,
-  },
-  modalFooter: {
+  fieldInput: {
     flexDirection: "row",
-    gap: Spacing.md,
-    padding: Spacing.xl,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.05)",
-  },
-  modalActionButton: {
-    flex: 1,
-    paddingVertical: Spacing.md,
-    borderRadius: BorderRadius.lg,
     alignItems: "center",
+    backgroundColor: "#F8F9FC",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    height: 44,
+  },
+  fieldRp: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#94A3B8",
+    marginRight: 6,
+  },
+  fieldText: {
+    flex: 1,
+    fontSize: 14,
+    color: "#191C1E",
+    padding: 0,
+  },
+  fieldTextBold: {
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  btnScanBarcode: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: "#F1F5F9",
     justifyContent: "center",
+    alignItems: "center",
   },
-  cancelButton: {
-    backgroundColor: "#F5F5F5",
+  catChipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
   },
-  cancelButtonText: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.secondary,
+  catChip: {
+    height: 32,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  saveButton: {
-    backgroundColor: Colors.primary.main,
-    ...Shadows.md,
+  catChipOn: {
+    backgroundColor: "#1A1D1F",
   },
-  saveButtonText: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.contrast,
+  catChipText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#64748B",
+  },
+  catChipTextOn: {
+    color: "#FFF",
+    fontWeight: "700",
+  },
+  btnPickPhoto: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    height: 44,
+    backgroundColor: "#F8F9FC",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderStyle: "dashed",
+  },
+  btnPickPhotoText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#64748B",
+  },
+  photoPreview: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 8,
+    padding: 10,
+    backgroundColor: "#F8F9FC",
+    borderRadius: 8,
+  },
+  photoPreviewText: {
+    flex: 1,
+    fontSize: 12,
+    color: "#64748B",
+  },
+
+  modalActions: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 16,
+  },
+  btnCancel: {
+    flex: 1,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnCancelText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#64748B",
+  },
+  btnSave: {
+    flex: 1,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: "#1A1D1F",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnSaveText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FFF",
   },
 });

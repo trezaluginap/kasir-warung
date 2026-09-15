@@ -1,21 +1,15 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View, useColorScheme } from "react-native";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { initDatabase } from "../database/service";
 import useAuthStore from "../store/authStore";
+import { Colors } from "../constants/theme";
+import GlobalAlert from "../components/GlobalAlert";
 
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -75,7 +69,7 @@ export default function RootLayout() {
           </>
         ) : (
           <>
-            <ActivityIndicator size="large" color="#0066CC" />
+            <ActivityIndicator size="large" color={Colors.primary.main} />
             <Text style={styles.loadingText}>Menyiapkan database...</Text>
           </>
         )}
@@ -84,17 +78,23 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <View style={{ flex: 1, backgroundColor: Colors.background.primary }}>
       <Stack>
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="checkout" options={{ headerShown: false }} />
         <Stack.Screen
           name="modal"
           options={{ presentation: "modal", title: "Modal" }}
         />
+        <Stack.Screen
+          name="printer"
+          options={{ presentation: "modal", title: "Printer" }}
+        />
       </Stack>
       <StatusBar style="auto" />
-    </ThemeProvider>
+      <GlobalAlert />
+    </View>
   );
 }
 

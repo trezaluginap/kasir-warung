@@ -10,14 +10,13 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
-  SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   BorderRadius,
   Colors,
@@ -26,12 +25,13 @@ import {
   Typography,
 } from "../constants/theme";
 import useAuthStore from "../store/authStore";
+import { showError } from "../utils/alertHelper";
 
 export default function LoginScreen() {
   const router = useRouter();
   const { session, loginWithUsernamePin } = useAuthStore();
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("admin");
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,7 +47,7 @@ export default function LoginScreen() {
     setIsLoading(false);
 
     if (!result.success) {
-      Alert.alert("Login gagal", result.message);
+      showError("Login gagal", result.message);
       return;
     }
 
@@ -107,6 +107,10 @@ export default function LoginScreen() {
               <Text style={styles.buttonText}>Masuk</Text>
             )}
           </TouchableOpacity>
+
+          <Text style={styles.hintText}>
+            💡 Offline Mode Default: User: <Text style={{fontWeight: 'bold'}}>admin</Text> | PIN: <Text style={{fontWeight: 'bold'}}>1234</Text>
+          </Text>
         </View>
 
         {/* Footer */}
@@ -204,6 +208,12 @@ const styles = StyleSheet.create({
     color: Colors.primary.contrast,
     fontWeight: Typography.fontWeight.bold,
     fontSize: Typography.fontSize.lg,
+  },
+  hintText: {
+    marginTop: Spacing.md,
+    fontSize: Typography.fontSize.xs,
+    color: Colors.text.secondary,
+    textAlign: "center",
   },
   footerText: {
     marginTop: Spacing["2xl"],

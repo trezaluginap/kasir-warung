@@ -1,849 +1,641 @@
 /**
  * ============================================
- * SCREEN RIWAYAT TRANSAKSI
+ * SCREEN RIWAYAT TRANSAKSI - Clean
  * ============================================
- *
- * Compact modern design with search functionality
+ * - Minimal header
+ * - No badge spam, no emoji
+ * - Clean text status (no green block)
+ * - Material Symbols
  */
 
-import * as Print from "expo-print";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
-import { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Alert,
   Modal,
-  SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  StatusBar,
 } from "react-native";
-import {
-  BorderRadius,
-  Colors,
-  Shadows,
-  Spacing,
-  Typography,
-} from "../../constants/theme";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { captureRef } from "react-native-view-shot";
+import { Colors, Spacing } from "../../constants/theme";
 import { ambilSemuaTransaksi } from "../../database/service";
-import { buildReceiptHtml } from "../../utils/receiptTemplate";
+import useAuthStore from "../../store/authStore";
+import { MaterialIcon } from "../../components/MaterialIcon";
+import ReceiptView from "../../components/ReceiptView";
+import { printStruk } from "../../services/printerService";
+import usePrinterStore from "../../store/printerStore";
+import { showSuccess, showError, showInfo, showConfirm } from "../../utils/alertHelper";
 
 export default function HistoryScreen() {
+  const router = useRouter();
+  const { logout } = useAuthStore();
+  const receiptRef = useRef(null);
   const [transaksiList, setTransaksiList] = useState([]);
-  const [filteredList, setFilteredList] = useState([]);
-  const [selectedTransaksi, setSelectedTransaksi] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTrx, setSelectedTrx] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [shareTrx, setShareTrx] = useState(null);
+  const [capturing, setCapturing] = useState(false);
 
-  // Auto refresh setiap kali tab history dibuka
-  useFocusEffect(
-    useCallback(() => {
-      loadTransaksi();
-    }, []),
-  );
+  useEffect(() => {
+    if (shareTrx && receiptRef.current && !capturing) {
+      setCapturing(true);
+      const timer = setTimeout(async () => {
+        try {
+          const uri = await captureRef(receiptRef, {
+            format: "jpg",
+            quality: 0.9,
+          });
+          const ok = await Sharing.isAvailableAsync();
+          if (ok) {
+            await Sharing.shareAsync(uri, {
+              mimeType: "image/jpeg",
+              dialogTitle: "Struk Pembayaran",
+            });
+          }
+        } catch (e) {
+          console.error("Error cetak struk:", e);
+          showError("Error", "Gagal cetak struk");
+        } finally {
+          setShareTrx(null);
+          setCapturing(false);
+        }
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [shareTrx]);
 
-  const loadTransaksi = async () => {
+  const loadTransaksi = useCallback(async () => {
     try {
       const list = await ambilSemuaTransaksi();
       setTransaksiList(list);
-      setFilteredList(list);
     } catch (error) {
-      console.error("Error load transaksi:", error);
+      console.error("Error load:", error);
     }
-  };
+  }, []);
 
-  const handleSearch = (text) => {
-    setSearchQuery(text);
+  useFocusEffect(
+    useCallback(() => {
+      loadTransaksi();
+    }, [loadTransaksi]),
+  );
 
-    if (text.trim() === "") {
-      setFilteredList(transaksiList);
-      return;
-    }
+  const formatRupiah = (n) => `Rp ${(n || 0).toLocaleString("id-ID")}`;
 
-    const query = text.toLowerCase();
-    const filtered = transaksiList.filter((trx) => {
-      // Search by transaction ID
-      const matchId = trx.id.toString().includes(query);
-
-      // Search by time (jam)
-      const waktu = formatJam(trx.waktuTransaksi).toLowerCase();
-      const matchTime = waktu.includes(query);
-
-      // Search by date
-      const tanggal = formatTanggal(trx.waktuTransaksi).toLowerCase();
-      const matchDate = tanggal.includes(query);
-
-      // Search by item names
-      const itemNames = trx.daftarBarang
-        .map((item) => item.nama.toLowerCase())
-        .join(" ");
-      const matchItems = itemNames.includes(query);
-
-      // Search by total price
-      const matchPrice = formatRupiah(trx.totalHarga)
-        .toLowerCase()
-        .includes(query);
-
-      return matchId || matchTime || matchDate || matchItems || matchPrice;
-    });
-
-    setFilteredList(filtered);
-  };
-
-  const formatRupiah = (angka) => {
-    return `Rp ${angka.toLocaleString("id-ID")}`;
-  };
-
-  const formatWaktu = (isoString) => {
-    const tanggal = new Date(isoString);
-    return tanggal.toLocaleString("id-ID", {
+  const formatWaktu = (iso) => {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    return d.toLocaleString("id-ID", {
       day: "2-digit",
       month: "short",
-      year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
-  const formatTanggal = (isoString) => {
-    const tanggal = new Date(isoString);
-    return tanggal.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
-  const formatJam = (isoString) => {
-    const tanggal = new Date(isoString);
-    return tanggal.toLocaleTimeString("id-ID", {
+  const formatJam = (iso) => {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    return d.toLocaleTimeString("id-ID", {
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
-  const openDetail = (transaksi) => {
-    setSelectedTransaksi(transaksi);
+  // Filter
+  const filteredList = transaksiList.filter((trx) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+    const matchId = trx.id.toString().includes(q);
+    const matchTime = formatJam(trx.waktuTransaksi).toLowerCase().includes(q);
+    const matchItems = (trx.daftarBarang || [])
+      .map((i) => i.nama.toLowerCase())
+      .join(" ")
+      .includes(q);
+    const matchPrice = formatRupiah(trx.totalHarga).toLowerCase().includes(q);
+    return matchId || matchTime || matchItems || matchPrice;
+  });
+
+  const totalOmset = transaksiList.reduce(
+    (sum, t) => sum + (t.totalHarga || 0),
+    0,
+  );
+  const totalQty = transaksiList.reduce(
+    (sum, t) =>
+      sum + (t.daftarBarang || []).reduce((s, i) => s + (i.qty || 0), 0),
+    0,
+  );
+
+  const openDetail = (trx) => {
+    setSelectedTrx(trx);
     setShowModal(true);
   };
 
-  const closeDetail = () => {
-    setSelectedTransaksi(null);
-    setShowModal(false);
-  };
-
-  const handleExport = async () => {
-    if (!selectedTransaksi) return;
-
+  const handlePrint = async (trx) => {
+    if (!trx) return;
     try {
-      const isAvailable = await Sharing.isAvailableAsync();
-      if (!isAvailable) {
-        Alert.alert("Info", "Fitur share tidak tersedia di perangkat ini");
+      const ok = await Sharing.isAvailableAsync();
+      if (!ok) {
+        showInfo("Info", "Fitur share tidak tersedia");
         return;
       }
-
-      const html = buildReceiptHtml(selectedTransaksi, {
-        storeName: "WARUNG POS",
-        storeAddress: "Jl. Warung No. 1",
-        storePhone: "Telp. 08xx-xxxx-xxxx",
-      });
-
-      const { uri } = await Print.printToFileAsync({ html });
-      await Sharing.shareAsync(uri, {
-        mimeType: "application/pdf",
-        UTI: "com.adobe.pdf",
-      });
-    } catch (error) {
-      console.error("Error export struk:", error);
-      Alert.alert("Error", "Gagal export struk");
+      setShareTrx(trx);
+    } catch (e) {
+      showError("Error", "Gagal cetak struk");
     }
   };
 
-  const renderSummaryItems = (items) => {
-    if (!Array.isArray(items) || items.length === 0) {
-      return "Tidak ada item";
+  const handleDirectPrint = async (trx) => {
+    if (!trx) return;
+    try {
+      const res = await printStruk({
+        trxId: trx.id,
+        waktu: trx.waktuTransaksi,
+        items: trx.daftarBarang || [],
+        total: trx.totalHarga,
+        totalBayar: trx.totalHarga,
+        kembalian: 0,
+      });
+      if (res.success) {
+        showSuccess("Struk Tercetak", `#TRX-${trx.id} berhasil dicetak.`);
+      } else if (res.code === "NEEDS_DEV_BUILD") {
+        showInfo("Printer Belum Aktif", res.message);
+      } else {
+        showError("Gagal Cetak", res.message);
+      }
+    } catch (e) {
+      showError("Error", e.message);
     }
-
-    const firstTwo = items
-      .slice(0, 2)
-      .map((item) => item.nama)
-      .join(", ");
-    const more = items.length > 2 ? ` +${items.length - 2}` : "";
-    return firstTwo + more;
-  };
-
-  const getTotalItems = (items) => {
-    if (!Array.isArray(items)) return 0;
-    return items.reduce((sum, item) => sum + (item.qty || 0), 0);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={Colors.primary.main}
-      />
+    <SafeAreaView style={s.root}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* Compact Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerIcon}>📊</Text>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>Riwayat</Text>
-            <Text style={styles.headerSubtitle}>
-              {filteredList.length} transaksi
-            </Text>
-          </View>
+      {/* Header */}
+      <View style={s.header}>
+        <Text style={s.headerTitle}>Riwayat Transaksi</Text>
+        <View style={s.headerRight}>
+          <TouchableOpacity
+            onPress={() => {
+              loadTransaksi();
+            }}
+            style={s.headerMenuBtn}
+          >
+            <MaterialIcon name="refresh" size={18} color="#1A1D1F" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              showConfirm({
+                title: "Keluar",
+                message: "Keluar dari sesi kasir?",
+                confirmText: "Keluar",
+                destructive: true,
+                onConfirm: () => {
+                  logout();
+                  router.replace("/login");
+                },
+              });
+            }}
+            style={s.headerMenuBtn}
+          >
+            <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputWrapper}>
-          <Text style={styles.searchIcon}>🔍</Text>
+      <ScrollView
+        style={s.scroll}
+        contentContainerStyle={s.scrollInner}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Summary */}
+        <View style={s.summaryBox}>
+          <Text style={s.summaryLabel}>OMZET HARI INI</Text>
+          <Text style={s.summaryAmount}>
+            {formatRupiah(totalOmset)}
+          </Text>
+          <Text style={s.summaryMeta}>
+            {transaksiList.length} transaksi • {totalQty} item
+          </Text>
+        </View>
+
+        {/* Search */}
+        <View style={s.searchBox}>
+          <MaterialIcon name="search" size={16} color="#94A3B8" />
           <TextInput
-            style={styles.searchInput}
-            placeholder="Cari ID, jam, tanggal, item..."
-            placeholderTextColor={Colors.text.secondary}
+            style={s.searchInput}
+            placeholder="Cari struk, item, atau jam..."
+            placeholderTextColor="#94A3B8"
             value={searchQuery}
-            onChangeText={handleSearch}
+            onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
-            <TouchableOpacity
-              onPress={() => handleSearch("")}
-              style={styles.clearButton}
-            >
-              <Text style={styles.clearButtonText}>×</Text>
+            <TouchableOpacity onPress={() => setSearchQuery("")}>
+              <MaterialIcon name="close" size={16} color="#94A3B8" />
             </TouchableOpacity>
           )}
         </View>
-      </View>
 
-      {/* Transaction List */}
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+        {/* Transaction List */}
         {filteredList.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>{searchQuery ? "🔍" : "📋"}</Text>
-            <Text style={styles.emptyTitle}>
-              {searchQuery ? "Tidak Ditemukan" : "Belum Ada Transaksi"}
-            </Text>
-            <Text style={styles.emptySubtext}>
-              {searchQuery
-                ? "Coba kata kunci lain"
-                : "Riwayat transaksi akan muncul di sini"}
-            </Text>
+          <View style={s.emptyBox}>
+            <MaterialIcon name="receipt_long" size={28} color="#CBD5E1" />
+            <Text style={s.emptyTitle}>Belum ada transaksi</Text>
           </View>
         ) : (
-          filteredList.map((trx, index) => (
-            <TouchableOpacity
-              key={trx.id}
-              style={styles.transactionCard}
-              onPress={() => openDetail(trx)}
-              activeOpacity={0.7}
-            >
-              {/* Compact Card Layout */}
-              <View style={styles.cardRow}>
-                {/* Left Section */}
-                <View style={styles.cardLeft}>
-                  <View style={styles.idBadge}>
-                    <Text style={styles.idText}>#{trx.id}</Text>
-                  </View>
-                  <View style={styles.cardInfo}>
-                    <Text style={styles.itemsPreview} numberOfLines={1}>
-                      {renderSummaryItems(trx.daftarBarang)}
-                    </Text>
-                    <View style={styles.metaRow}>
-                      <Text style={styles.metaText}>
-                        {formatTanggal(trx.waktuTransaksi)}
-                      </Text>
-                      <Text style={styles.metaDot}>•</Text>
-                      <Text style={styles.metaText}>
-                        {formatJam(trx.waktuTransaksi)}
-                      </Text>
-                      <Text style={styles.metaDot}>•</Text>
-                      <Text style={styles.metaText}>
-                        {getTotalItems(trx.daftarBarang)} item
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-
-                {/* Right Section */}
-                <View style={styles.cardRight}>
-                  <Text style={styles.totalAmount}>
-                    {formatRupiah(trx.totalHarga)}
+          <View style={s.trxList}>
+            {filteredList.map((trx) => (
+              <TouchableOpacity
+                key={trx.id}
+                style={s.trxRow}
+                onPress={() => openDetail(trx)}
+                activeOpacity={0.7}
+              >
+                <View style={s.trxLeft}>
+                  <Text style={s.trxId}>#TRX-{trx.id}</Text>
+                  <Text style={s.trxMeta}>
+                    {formatJam(trx.waktuTransaksi)} •{" "}
+                    {(trx.daftarBarang || [])
+                      .map((i) => `${i.nama} (${i.qty}x)`)
+                      .slice(0, 2)
+                      .join(", ")}
+                    {trx.daftarBarang && trx.daftarBarang.length > 2
+                      ? ` +${trx.daftarBarang.length - 2}`
+                      : ""}
                   </Text>
-                  <Text style={styles.viewArrow}>→</Text>
                 </View>
-              </View>
-            </TouchableOpacity>
-          ))
+                <Text style={s.trxAmount}>
+                  {formatRupiah(trx.totalHarga)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         )}
       </ScrollView>
 
       {/* Detail Modal */}
       <Modal
         visible={showModal}
-        transparent={true}
+        transparent
         animationType="slide"
-        onRequestClose={closeDetail}
+        onRequestClose={() => setShowModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            {/* Modal Header */}
-            <View style={styles.modalHeader}>
-              <View style={styles.modalHeaderContent}>
-                <Text style={styles.modalTitle}>Detail Transaksi</Text>
-                {selectedTransaksi && (
-                  <Text style={styles.modalSubtitle}>
-                    {formatWaktu(selectedTransaksi.waktuTransaksi)}
-                  </Text>
-                )}
+        <View style={s.modalOverlay}>
+          <View style={s.modalSheet}>
+            <View style={s.modalHandle} />
+            <View style={s.modalHeaderRow}>
+              <View>
+                <Text style={s.modalTitle}>
+                  #TRX-{selectedTrx?.id}
+                </Text>
+                <Text style={s.modalSubtitle}>
+                  {formatWaktu(selectedTrx?.waktuTransaksi)}
+                </Text>
               </View>
               <TouchableOpacity
-                style={styles.modalCloseButton}
-                onPress={closeDetail}
-                activeOpacity={0.7}
+                onPress={() => setShowModal(false)}
+                style={s.iconBtn}
               >
-                <Text style={styles.modalCloseIcon}>×</Text>
+                <MaterialIcon name="close" size={18} color="#64748B" />
               </TouchableOpacity>
             </View>
 
-            {selectedTransaksi && (
-              <ScrollView
-                style={styles.modalBody}
-                showsVerticalScrollIndicator={false}
-              >
-                {/* Transaction Info Card */}
-                <View style={styles.infoCard}>
-                  <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>ID Transaksi</Text>
-                    <Text style={styles.infoValue}>
-                      #{selectedTransaksi.id}
-                    </Text>
-                  </View>
-                  <View style={styles.infoDivider} />
-                  <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>Tanggal</Text>
-                    <Text style={styles.infoValue}>
-                      {formatTanggal(selectedTransaksi.waktuTransaksi)}
-                    </Text>
-                  </View>
-                  <View style={styles.infoDivider} />
-                  <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>Waktu</Text>
-                    <Text style={styles.infoValue}>
-                      {formatJam(selectedTransaksi.waktuTransaksi)}
-                    </Text>
-                  </View>
-                  <View style={styles.infoDivider} />
-                  <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>Total Item</Text>
-                    <Text style={styles.infoValue}>
-                      {getTotalItems(selectedTransaksi.daftarBarang)} item
-                    </Text>
-                  </View>
-                </View>
+            <ScrollView
+              style={s.modalBody}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={s.modalInfoRow}>
+                <Text style={s.modalInfoLabel}>Total</Text>
+                <Text style={s.modalInfoValue}>
+                  {formatRupiah(selectedTrx?.totalHarga)}
+                </Text>
+              </View>
 
-                {/* Items Section */}
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionIcon}>🛍️</Text>
-                  <Text style={styles.sectionTitle}>Daftar Belanja</Text>
-                </View>
-
-                <View style={styles.itemsCard}>
-                  {selectedTransaksi.daftarBarang.map((item, index) => (
-                    <View key={`${item.nama}-${index}`}>
-                      <View style={styles.itemRow}>
-                        <View style={styles.itemLeft}>
-                          <View style={styles.itemNumberBadge}>
-                            <Text style={styles.itemNumberText}>
-                              {index + 1}
-                            </Text>
-                          </View>
-                          <View style={styles.itemInfo}>
-                            <Text style={styles.itemName} numberOfLines={2}>
-                              {item.nama}
-                            </Text>
-                            <View style={styles.itemDetails}>
-                              <Text style={styles.itemPrice}>
-                                {formatRupiah(item.harga)}
-                              </Text>
-                              <Text style={styles.itemQty}>× {item.qty}</Text>
-                            </View>
-                          </View>
-                        </View>
-                        <View style={styles.itemRight}>
-                          <Text style={styles.itemSubtotal}>
-                            {formatRupiah(item.subtotal)}
-                          </Text>
-                        </View>
-                      </View>
-                      {index < selectedTransaksi.daftarBarang.length - 1 && (
-                        <View style={styles.itemDivider} />
-                      )}
-                    </View>
-                  ))}
-                </View>
-
-                {/* Total Section */}
-                <View style={styles.totalCard}>
-                  <View style={styles.totalRow}>
-                    <Text style={styles.totalCardLabel}>Total Pembayaran</Text>
-                    <Text style={styles.totalCardAmount}>
-                      {formatRupiah(selectedTransaksi.totalHarga)}
+              <Text style={s.modalSectionTitle}>RINCIAN ITEM</Text>
+              {(selectedTrx?.daftarBarang || []).map((item, idx) => (
+                <View key={idx} style={s.modalItemRow}>
+                  <View style={s.modalItemLeft}>
+                    <Text style={s.modalItemName}>
+                      {item.nama}
+                    </Text>
+                    <Text style={s.modalItemMeta}>
+                      {formatRupiah(item.harga)} x {item.qty}
                     </Text>
                   </View>
+                  <Text style={s.modalItemSubtotal}>
+                    {formatRupiah(item.subtotal || item.harga * item.qty)}
+                  </Text>
                 </View>
-              </ScrollView>
-            )}
+              ))}
+            </ScrollView>
 
-            {/* Modal Footer */}
-            <View style={styles.modalFooter}>
-              <TouchableOpacity
-                style={styles.exportButton}
-                onPress={handleExport}
-                activeOpacity={0.85}
-              >
-                <View style={styles.exportButtonContent}>
-                  <Text style={styles.exportButtonIcon}>🖨️</Text>
-                  <Text style={styles.exportButtonText}>Export ke PDF</Text>
-                </View>
-                <Text style={styles.exportButtonArrow}>→</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={s.btnModalPrint}
+              onPress={() => {
+                setShowModal(false);
+                handleDirectPrint(selectedTrx);
+              }}
+            >
+              <MaterialIcon name="print" size={16} color="#FFF" />
+              <Text style={s.btnModalPrintText}>Cetak Struk</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={s.btnModalShare}
+              onPress={() => {
+                setShowModal(false);
+                handlePrint(selectedTrx);
+              }}
+            >
+              <MaterialIcon name="share" size={16} color="#FFF" />
+              <Text style={s.btnModalShareText}>Bagikan</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      {/* Hidden Receipt for capture */}
+      {shareTrx && (
+        <View style={s.receiptCanvas}>
+          <View ref={receiptRef} collapsable={false} style={s.receiptWrap}>
+            <ReceiptView
+              transaksi={{ total: shareTrx.totalHarga }}
+              items={shareTrx.daftarBarang || []}
+              totalBayar={shareTrx.totalHarga}
+              kembalian={0}
+            />
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F9FD",
-  },
+const s = StyleSheet.create({
+  root: { flex: 1, backgroundColor: "#F8F9FC" },
 
-  // Compact Header Styles
+  // Header
   header: {
-    backgroundColor: Colors.primary.main,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    borderBottomLeftRadius: BorderRadius.xl,
-    borderBottomRightRadius: BorderRadius.xl,
-    ...Shadows.md,
-  },
-  headerContent: {
+    height: 52,
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.sm,
-  },
-  headerIcon: {
-    fontSize: 24,
-  },
-  headerTextContainer: {
-    gap: 2,
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    backgroundColor: "#FFFFFF",
   },
   headerTitle: {
-    fontSize: Typography.fontSize.xl,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.contrast,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#191C1E",
   },
-  headerSubtitle: {
-    fontSize: Typography.fontSize.xs,
-    color: Colors.primary.contrast,
-    opacity: 0.85,
-  },
-
-  // Search Bar Styles
-  searchContainer: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.sm,
-  },
-  searchInputWrapper: {
+  headerRight: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: BorderRadius.lg,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.08)",
-    ...Shadows.sm,
+    gap: 8,
   },
-  searchIcon: {
-    fontSize: 16,
-    marginRight: Spacing.xs,
+  headerMenuBtn: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // Scroll
+  scroll: { flex: 1 },
+  scrollInner: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 100,
+  },
+
+  // Summary
+  summaryBox: {
+    marginBottom: 16,
+  },
+  summaryLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#94A3B8",
+    letterSpacing: 0.8,
+    marginBottom: 4,
+  },
+  summaryAmount: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: "#191C1E",
+    letterSpacing: -0.5,
+    marginBottom: 2,
+  },
+  summaryMeta: {
+    fontSize: 12,
+    color: "#94A3B8",
+  },
+
+  // Search
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 44,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    gap: 8,
+    marginBottom: 16,
   },
   searchInput: {
     flex: 1,
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.primary,
-    paddingVertical: Spacing.xs,
-  },
-  clearButton: {
-    width: 24,
-    height: 24,
-    borderRadius: BorderRadius.md,
-    backgroundColor: "#F5F5F5",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  clearButtonText: {
-    fontSize: 20,
-    color: Colors.text.secondary,
-    lineHeight: 20,
+    fontSize: 14,
+    color: "#191C1E",
+    padding: 0,
   },
 
-  // Scroll Container
-  scrollContainer: {
-    flex: 1,
+  // Transaction List
+  trxList: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
   },
-  scrollContent: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xs,
-    paddingBottom: Spacing.xl,
+  trxRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#F1F5F9",
+  },
+  trxLeft: { flex: 1, marginRight: 12 },
+  trxId: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#191C1E",
+  },
+  trxMeta: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 2,
+  },
+  trxAmount: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#191C1E",
   },
 
-  // Empty State
-  emptyState: {
+  // Empty
+  emptyBox: {
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: Spacing["3xl"],
-    paddingHorizontal: Spacing.xl,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    opacity: 0.4,
-    marginBottom: Spacing.md,
+    paddingVertical: 48,
+    gap: 6,
   },
   emptyTitle: {
-    fontSize: Typography.fontSize.lg,
-    color: Colors.text.primary,
-    fontWeight: Typography.fontWeight.bold,
-    marginBottom: Spacing.xs,
-    textAlign: "center",
-  },
-  emptySubtext: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.secondary,
-    textAlign: "center",
-  },
-
-  // Compact Transaction Card
-  transactionCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    marginBottom: Spacing.xs + 4,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.06)",
-    ...Shadows.sm,
-  },
-  cardRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  cardLeft: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  idBadge: {
-    backgroundColor: Colors.primary.main,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-    borderRadius: BorderRadius.sm,
-    minWidth: 44,
-    alignItems: "center",
-  },
-  idText: {
-    fontSize: Typography.fontSize.xs,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.contrast,
-  },
-  cardInfo: {
-    flex: 1,
-    gap: 2,
-  },
-  itemsPreview: {
-    fontSize: Typography.fontSize.sm,
-    fontWeight: Typography.fontWeight.semibold,
-    color: Colors.text.primary,
-    marginBottom: 2,
-  },
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    flexWrap: "wrap",
-  },
-  metaText: {
-    fontSize: Typography.fontSize.xs,
-    color: Colors.text.secondary,
-  },
-  metaDot: {
-    fontSize: Typography.fontSize.xs,
-    color: Colors.text.secondary,
-    opacity: 0.5,
-  },
-  cardRight: {
-    alignItems: "flex-end",
-    gap: 2,
-  },
-  totalAmount: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.main,
-  },
-  viewArrow: {
     fontSize: 14,
-    color: Colors.primary.main,
-    opacity: 0.6,
+    fontWeight: "600",
+    color: "#94A3B8",
   },
 
-  // Modal Styles
+  // Modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "flex-end",
   },
-  modalContainer: {
+  modalSheet: {
     backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: BorderRadius["3xl"],
-    borderTopRightRadius: BorderRadius["3xl"],
-    maxHeight: "90%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: "85%",
   },
-  modalHeader: {
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#E2E8F0",
+    borderRadius: 2,
+    alignSelf: "center",
+    marginBottom: 16,
+  },
+  modalHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    paddingTop: Spacing.xl,
-    paddingHorizontal: Spacing.xl,
-    paddingBottom: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(0, 0, 0, 0.05)",
-  },
-  modalHeaderContent: {
-    flex: 1,
-    gap: 4,
+    marginBottom: 16,
   },
   modalTitle: {
-    fontSize: Typography.fontSize["2xl"],
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#191C1E",
   },
   modalSubtitle: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.secondary,
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 2,
+  },
+  iconBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalBody: { maxHeight: 360 },
+  modalInfoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#F1F5F9",
+    marginBottom: 12,
+  },
+  modalInfoLabel: {
+    fontSize: 13,
+    color: "#64748B",
+  },
+  modalInfoValue: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#191C1E",
+  },
+  modalSectionTitle: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#94A3B8",
+    letterSpacing: 0.8,
     marginTop: 4,
+    marginBottom: 8,
   },
-  modalCloseButton: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: "#F5F5F5",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: Spacing.md,
-  },
-  modalCloseIcon: {
-    fontSize: 28,
-    color: Colors.text.secondary,
-    lineHeight: 28,
-  },
-  modalBody: {
-    padding: Spacing.xl,
-  },
-  modalFooter: {
-    padding: Spacing.xl,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.05)",
-  },
-
-  // Info Card
-  infoCard: {
-    backgroundColor: "#F8F9FD",
-    borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
-    marginBottom: Spacing.lg,
-  },
-  infoRow: {
+  modalItemRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: Spacing.xs,
+    paddingVertical: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#F1F5F9",
   },
-  infoLabel: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.secondary,
-    fontWeight: Typography.fontWeight.medium,
+  modalItemLeft: { flex: 1, marginRight: 12 },
+  modalItemName: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#191C1E",
   },
-  infoValue: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
+  modalItemMeta: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 2,
   },
-  infoDivider: {
-    height: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
-    marginVertical: Spacing.xs,
+  modalItemSubtotal: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#191C1E",
   },
-
-  // Section Header
-  sectionHeader: {
+  btnModalPrint: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.xs,
-    marginBottom: Spacing.md,
+    justifyContent: "center",
+    gap: 8,
+    height: 48,
+    borderRadius: 10,
+    backgroundColor: "#1A1D1F",
+    marginTop: 16,
   },
-  sectionIcon: {
-    fontSize: 20,
+  btnModalPrintText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FFF",
   },
-  sectionTitle: {
-    fontSize: Typography.fontSize.lg,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
+  btnModalShare: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: "#25D366",
+    marginTop: 8,
   },
-
-  // Items Card
-  itemsCard: {
+  btnModalShareText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FFF",
+  },
+  receiptCanvas: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    opacity: 0,
+    zIndex: -1,
+  },
+  receiptWrap: {
     backgroundColor: "#FFFFFF",
-    borderRadius: BorderRadius.xl,
-    padding: Spacing.md,
-    marginBottom: Spacing.lg,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.05)",
-  },
-  itemRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    paddingVertical: Spacing.sm,
-  },
-  itemLeft: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: Spacing.sm,
-    marginRight: Spacing.md,
-  },
-  itemNumberBadge: {
-    backgroundColor: Colors.primary.main,
-    width: 28,
-    height: 28,
-    borderRadius: BorderRadius.md,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  itemNumberText: {
-    fontSize: Typography.fontSize.xs,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.contrast,
-  },
-  itemInfo: {
-    flex: 1,
-    gap: 4,
-  },
-  itemName: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.semibold,
-    color: Colors.text.primary,
-    lineHeight: 20,
-  },
-  itemDetails: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-  },
-  itemPrice: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.text.secondary,
-  },
-  itemQty: {
-    fontSize: Typography.fontSize.sm,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.secondary,
-  },
-  itemRight: {
-    alignItems: "flex-end",
-    justifyContent: "center",
-  },
-  itemSubtotal: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.main,
-  },
-  itemDivider: {
-    height: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
-    marginVertical: Spacing.xs,
-  },
-
-  // Total Card
-  totalCard: {
-    backgroundColor: "#F0F3FF",
-    borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
-    borderWidth: 2,
-    borderColor: Colors.primary.main,
-  },
-  totalRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  totalCardLabel: {
-    fontSize: Typography.fontSize.lg,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
-  },
-  totalCardAmount: {
-    fontSize: Typography.fontSize["2xl"],
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.main,
-  },
-
-  // Export Button
-  exportButton: {
-    backgroundColor: Colors.primary.main,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: Spacing.md + 2,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: BorderRadius.xl,
-    ...Shadows.lg,
-  },
-  exportButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  exportButtonIcon: {
-    fontSize: 24,
-  },
-  exportButtonText: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary.contrast,
-  },
-  exportButtonArrow: {
-    fontSize: 20,
-    color: Colors.primary.contrast,
-    fontWeight: Typography.fontWeight.bold,
   },
 });

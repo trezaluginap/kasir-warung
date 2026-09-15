@@ -1,0 +1,74 @@
+name: CI
+
+# Wanneer draait deze pipeline?
+# - bij elke push naar main
+# - bij elke Pull Request richting main
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Wat is CI? Continuous Integration:
+# Automatisch controleren dat de code altijd werkt (lint + tests slagen),
+# VOORDAT het wordt gemerged. Een groene check = veilig om te mergen.
+# Rode check = er is iets kapot, fix het eerst.
+jobs:
+  # ---------- JOB 1: Quality checks ----------
+  quality:
+    name: Lint + Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # Stap 1: code van GitHub halen (checkout)
+      - uses: actions/checkout@v4
+
+      # Stap 2: Node installeren (zelfde versie als lokaal, zie .nvmrc / package.json)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # Stap 3: dependencies installeren
+      - name: Install dependencies
+        run: npm ci
+
+      # Stap 4: lint — controleer code-stijl & fouten statisch
+      # Lokaal:  npx eslint app/ store/ database/ ...
+      - name: Lint
+        run: npx eslint app/ store/ database/ utils/ components/ services/ constants/ __tests__/
+
+      # Stap 5: tests — voer de unit tests uit
+      - name: Tests
+        run: npm test -- --ci --silent
+
+      # Stap 6: check dat dependency versions kloppen met Expo SDK
+      - name: Expo Doctor
+        run: npx expo-doctor
+
+  # ---------- JOB 2: Build check ----------
+  # App moet ook daadwerkelijk kunnen builden (bundelen), niet alleen linten.
+  build:
+    name: Verifieer Android bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality # draait pas als quality groen is
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Export bundelt de app naar dist/ en faalt als er een compile-fout is.
+      # Dit is GEEN volledige Android build (dat kost 20 min + EAS) — alleen
+      # een snelle check dat alle imports/resolven kloppen.
+      - name: Export bundle (compile check)
+        run: npx expo export --platform android --output-dir dist

@@ -1,152 +1,125 @@
 /**
  * ============================================
- * MODERN DESIGN SYSTEM - WARUNG POS
+ * DESIGN SYSTEM TOKENS - WARUNG POS
  * ============================================
- *
- * Minimalist & Modern theme dengan organic color palette
  */
 
 import { Platform } from "react-native";
 
-// ============================================
-// COLOR PALETTE
-// ============================================
 export const Colors = {
-  // Primary Colors (Organic Green Palette)
   primary: {
-    main: "#9CAB84", // Medium olive green - Main brand color
-    light: "#C5D89D", // Light sage green
-    dark: "#89986D", // Dark moss green
-    contrast: "#FFFFFF", // White text on primary
+    main: "#1A1D1F",
+    light: "#2E3133",
+    dark: "#101113",
+    contrast: "#FFFFFF",
+    soft: "#F1F5F9",
   },
 
-  // Secondary & Accent
   secondary: {
-    main: "#F6F0D7", // Cream/beige - Soft background
-    light: "#FFFEF9", // Almost white cream
-    dark: "#E8DFC0", // Darker cream
+    main: "#059669",
+    light: "#0EA476",
+    dark: "#047857",
+    container: "#D1FAE5",
+    onContainer: "#065F46",
+    contrast: "#FFFFFF",
   },
 
   accent: {
-    success: "#6FBA82", // Modern green for success
-    warning: "#F4A259", // Warm orange
-    error: "#E76F5A", // Soft red
-    info: "#5B9BD5", // Calm blue
+    success: "#059669",
+    warning: "#B45309",
+    error: "#DC2626",
+    info: "#2563EB",
   },
 
-  // Neutral Colors
   neutral: {
-    50: "#FAFAFA", // Almost white
-    100: "#F5F5F5", // Very light gray
-    200: "#EEEEEE", // Light gray
-    300: "#E0E0E0", // Gray
-    400: "#BDBDBD", // Medium gray
-    500: "#9E9E9E", // Dark gray
-    600: "#757575", // Darker gray
-    700: "#616161", // Very dark gray
-    800: "#424242", // Almost black
-    900: "#212121", // Black
+    50: "#FAFBFC",
+    100: "#F8F9FC",
+    200: "#F1F5F9",
+    300: "#E2E8F0",
+    400: "#CBD5E1",
+    500: "#94A3B8",
+    600: "#64748B",
+    700: "#475569",
+    800: "#334155",
+    900: "#191C1E",
   },
 
-  // Text Colors
   text: {
-    primary: "#2C3E2C", // Dark green-black for main text
-    secondary: "#5F6F5F", // Medium gray-green
-    disabled: "#A8B5A8", // Light gray-green
-    inverse: "#FFFFFF", // White text
+    primary: "#191C1E",
+    secondary: "#64748B",
+    muted: "#94A3B8",
+    disabled: "#CBD5E1",
+    inverse: "#FFFFFF",
   },
 
-  // Background Colors
   background: {
-    primary: "#FFFFFF", // Pure white
-    secondary: "#F6F0D7", // Cream background
-    tertiary: "#FAFAF8", // Off-white
-    elevated: "#FFFFFF", // Cards/elevated surfaces
+    primary: "#F8F9FC",
+    secondary: "#FFFFFF",
+    surface: "#F8F9FC",
+    elevated: "#FFFFFF",
+    inverse: "#1A1D1F",
   },
 
-  // Border Colors
   border: {
-    light: "#E8E8E0", // Very light border
-    main: "#D4D4C8", // Main border color
-    dark: "#B8B8A8", // Dark border
+    light: "#F1F5F9",
+    main: "#E2E8F0",
+    dark: "#CBD5E1",
   },
 
-  // Legacy support (for compatibility)
   light: {
-    text: "#2C3E2C",
-    background: "#F6F0D7",
-    tint: "#9CAB84",
-    icon: "#5F6F5F",
-    tabIconDefault: "#A8B5A8",
-    tabIconSelected: "#9CAB84",
+    text: "#191C1E",
+    background: "#F8F9FC",
+    tint: "#1A1D1F",
+    icon: "#64748B",
+    tabIconDefault: "#94A3B8",
+    tabIconSelected: "#1A1D1F",
   },
 };
 
-// ============================================
-// TYPOGRAPHY SCALE
-// ============================================
 export const Typography = {
-  // Font Sizes
   fontSize: {
-    xs: 12,
-    sm: 14,
-    base: 16,
-    lg: 18,
+    xs: 10,
+    sm: 12,
+    base: 14,
+    lg: 16,
     xl: 20,
-    "2xl": 24,
-    "3xl": 28,
-    "4xl": 32,
-    "5xl": 40,
+    "2xl": 26,
+    "3xl": 32,
   },
 
-  // Font Weights
   fontWeight: {
-    light: "300" as const,
     normal: "400" as const,
     medium: "500" as const,
     semibold: "600" as const,
     bold: "700" as const,
-    extrabold: "800" as const,
   },
 
-  // Line Heights
   lineHeight: {
     tight: 1.2,
-    normal: 1.5,
-    relaxed: 1.75,
+    normal: 1.4,
+    relaxed: 1.6,
   },
 };
 
-// ============================================
-// SPACING SYSTEM (8px base)
-// ============================================
 export const Spacing = {
   xs: 4,
   sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  "2xl": 40,
-  "3xl": 48,
-  "4xl": 64,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  "2xl": 32,
+  "3xl": 40,
 };
 
-// ============================================
-// BORDER RADIUS
-// ============================================
 export const BorderRadius = {
-  none: 0,
   sm: 6,
-  md: 10,
-  lg: 14,
-  xl: 18,
-  "2xl": 24,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  "2xl": 20,
   full: 9999,
 };
 
-// ============================================
-// SHADOWS (Elevation)
-// ============================================
 export const Shadows = {
   none: {
     shadowColor: "transparent",
@@ -158,14 +131,14 @@ export const Shadows = {
   sm: {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.04,
     shadowRadius: 2,
     elevation: 1,
   },
   md: {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.06,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -179,78 +152,19 @@ export const Shadows = {
   xl: {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
     elevation: 8,
   },
 };
 
-// ============================================
-// ANIMATION TIMINGS
-// ============================================
-export const Animation = {
-  fast: 150,
-  normal: 250,
-  slow: 350,
-};
-
-// ============================================
-// FONTS (Platform specific)
-// ============================================
 export const Fonts = Platform.select({
   ios: {
-    sans: "system-ui",
-    serif: "ui-serif",
-    rounded: "ui-rounded",
-    mono: "ui-monospace",
+    sans: "Space Grotesk",
+    mono: "Space Grotesk",
   },
   default: {
-    sans: "normal",
-    serif: "serif",
-    rounded: "normal",
+    sans: "sans-serif",
     mono: "monospace",
   },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded:
-      "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
 });
-
-// ============================================
-// COMPONENT PRESETS
-// ============================================
-export const ComponentStyles = {
-  button: {
-    primary: {
-      backgroundColor: Colors.primary.main,
-      borderRadius: BorderRadius.lg,
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.lg,
-    },
-    secondary: {
-      backgroundColor: Colors.secondary.main,
-      borderRadius: BorderRadius.lg,
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.lg,
-    },
-  },
-  card: {
-    backgroundColor: Colors.background.elevated,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    ...Shadows.md,
-  },
-  input: {
-    backgroundColor: Colors.background.primary,
-    borderWidth: 1.5,
-    borderColor: Colors.border.light,
-    borderRadius: BorderRadius.md,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-    fontSize: Typography.fontSize.base,
-    color: Colors.text.primary,
-  },
-};
