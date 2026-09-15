@@ -80,7 +80,7 @@ export function buildStrukText({ trxId, waktu, kasir = "Admin", items = [], tota
   const sep = "=".repeat(CHARS);
 
   lines.push(sep);
-  lines.push(center("WARUNG POS"));
+  lines.push(center("TRITOP JAYA"));
   lines.push(center("Jl. Raya No. 123"));
   lines.push(center("Telp: 0812-3456-7890"));
   lines.push(sep);

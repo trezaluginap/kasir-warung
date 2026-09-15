@@ -188,7 +188,7 @@ export default function HistoryScreen() {
             }}
             style={s.headerMenuBtn}
           >
-            <MaterialIcon name="refresh" size={18} color="#1A1D1F" />
+            <MaterialIcon name="refresh" size={18} color="#059669" />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -205,7 +205,7 @@ export default function HistoryScreen() {
             }}
             style={s.headerMenuBtn}
           >
-            <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+            <MaterialIcon name="account_circle" size={22} color="#059669" />
           </TouchableOpacity>
         </View>
       </View>
@@ -229,17 +229,17 @@ export default function HistoryScreen() {
 
         {/* Search */}
         <View style={s.searchBox}>
-          <MaterialIcon name="search" size={16} color="#94A3B8" />
+          <MaterialIcon name="search" size={16} color="#A8A29E" />
           <TextInput
             style={s.searchInput}
             placeholder="Cari struk, item, atau jam..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#A8A29E"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery("")}>
-              <MaterialIcon name="close" size={16} color="#94A3B8" />
+              <MaterialIcon name="close" size={16} color="#A8A29E" />
             </TouchableOpacity>
           )}
         </View>
@@ -247,7 +247,7 @@ export default function HistoryScreen() {
         {/* Transaction List */}
         {filteredList.length === 0 ? (
           <View style={s.emptyBox}>
-            <MaterialIcon name="receipt_long" size={28} color="#CBD5E1" />
+            <MaterialIcon name="receipt_long" size={28} color="#D6D3D1" />
             <Text style={s.emptyTitle}>Belum ada transaksi</Text>
           </View>
         ) : (
@@ -304,7 +304,7 @@ export default function HistoryScreen() {
                 onPress={() => setShowModal(false)}
                 style={s.iconBtn}
               >
-                <MaterialIcon name="close" size={18} color="#64748B" />
+                <MaterialIcon name="close" size={18} color="#57534E" />
               </TouchableOpacity>
             </View>
 
@@ -380,7 +380,7 @@ export default function HistoryScreen() {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F8F9FC" },
+  root: { flex: 1, backgroundColor: "#FAF7F4" },
 
   // Header
   header: {
@@ -394,7 +394,7 @@ const s = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   headerRight: {
     flexDirection: "row",
@@ -423,20 +423,20 @@ const s = StyleSheet.create({
   summaryLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 0.8,
     marginBottom: 4,
   },
   summaryAmount: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     letterSpacing: -0.5,
     marginBottom: 2,
   },
   summaryMeta: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
   },
 
   // Search
@@ -453,7 +453,7 @@ const s = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: "#191C1E",
+    color: "#1C1917",
     padding: 0,
   },
 
@@ -471,23 +471,23 @@ const s = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   trxLeft: { flex: 1, marginRight: 12 },
   trxId: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   trxMeta: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginTop: 2,
   },
   trxAmount: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
 
   // Empty
@@ -499,7 +499,7 @@ const s = StyleSheet.create({
   emptyTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#A8A29E",
   },
 
   // Modal
@@ -518,7 +518,7 @@ const s = StyleSheet.create({
   modalHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#E7E5E4",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 16,
@@ -532,18 +532,18 @@ const s = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   modalSubtitle: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginTop: 2,
   },
   iconBtn: {
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -554,22 +554,22 @@ const s = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
     marginBottom: 12,
   },
   modalInfoLabel: {
     fontSize: 13,
-    color: "#64748B",
+    color: "#57534E",
   },
   modalInfoValue: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   modalSectionTitle: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 0.8,
     marginTop: 4,
     marginBottom: 8,
@@ -580,23 +580,23 @@ const s = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   modalItemLeft: { flex: 1, marginRight: 12 },
   modalItemName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   modalItemMeta: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginTop: 2,
   },
   modalItemSubtotal: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   btnModalPrint: {
     flexDirection: "row",
@@ -605,7 +605,7 @@ const s = StyleSheet.create({
     gap: 8,
     height: 48,
     borderRadius: 10,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     marginTop: 16,
   },
   btnModalPrintText: {

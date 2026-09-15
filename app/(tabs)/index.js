@@ -173,7 +173,7 @@ export default function KasirScreen() {
 
       {/* Header */}
       <View style={s.header}>
-        <Text style={s.headerTitle}>Warung POS</Text>
+        <Text style={s.headerTitle}>TRITOP JAYA</Text>
         <TouchableOpacity
           onPress={() => {
             showConfirm({
@@ -189,24 +189,24 @@ export default function KasirScreen() {
           }}
           style={s.headerMenuBtn}
         >
-          <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+          <MaterialIcon name="account_circle" size={22} color="#059669" />
         </TouchableOpacity>
       </View>
 
       {/* Search Bar (Top, sticky) */}
       <View style={s.searchSection}>
         <View style={s.searchInputBox}>
-          <MaterialIcon name="search" size={16} color="#94A3B8" />
+          <MaterialIcon name="search" size={16} color="#A8A29E" />
           <TextInput
             style={s.searchInput}
             placeholder="Cari barang..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#A8A29E"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery("")}>
-              <MaterialIcon name="close" size={16} color="#94A3B8" />
+              <MaterialIcon name="close" size={16} color="#A8A29E" />
             </TouchableOpacity>
           )}
         </View>
@@ -234,7 +234,7 @@ export default function KasirScreen() {
             <Text style={s.searchCount}>{searchResults.length} hasil</Text>
             {searchResults.length === 0 ? (
               <View style={s.emptySearchBox}>
-                <MaterialIcon name="search" size={24} color="#CBD5E1" />
+                <MaterialIcon name="search" size={24} color="#D6D3D1" />
                 <Text style={s.emptySearchText}>Produk tidak ditemukan</Text>
               </View>
             ) : (
@@ -284,7 +284,7 @@ export default function KasirScreen() {
             onPress={() => setShowCustomModal(true)}
             activeOpacity={0.7}
           >
-            <MaterialIcon name="add" size={18} color="#1A1D1F" />
+            <MaterialIcon name="add" size={18} color="#059669" />
           </TouchableOpacity>
         </View>
 
@@ -326,7 +326,7 @@ export default function KasirScreen() {
         {/* Cart List */}
         {items.length === 0 ? (
           <View style={s.emptyCartBox}>
-            <MaterialIcon name="shopping_bag" size={28} color="#CBD5E1" />
+            <MaterialIcon name="shopping_bag" size={28} color="#D6D3D1" />
             <Text style={s.emptyCartTitle}>Belum ada barang</Text>
             <Text style={s.emptyCartSub}>Ketik untuk mulai menambahkan</Text>
           </View>
@@ -355,14 +355,14 @@ export default function KasirScreen() {
                     onPress={() => kurangiItem(item.uniqueId)}
                     style={s.qtyBtn}
                   >
-                    <MaterialIcon name="remove" size={14} color="#64748B" />
+                    <MaterialIcon name="remove" size={14} color="#57534E" />
                   </TouchableOpacity>
                   <Text style={s.qtyVal}>{item.qty}</Text>
                   <TouchableOpacity
                     onPress={() => tambahQtyItem(item.uniqueId)}
                     style={s.qtyBtn}
                   >
-                    <MaterialIcon name="add" size={14} color="#1A1D1F" />
+                    <MaterialIcon name="add" size={14} color="#059669" />
                   </TouchableOpacity>
                   <Text style={s.cartItemSubtotal}>
                     {formatRupiah(item.harga * item.qty)}
@@ -410,7 +410,7 @@ export default function KasirScreen() {
                 onChangeText={(t) => setCustomPrice(formatCurrencyInput(t))}
                 keyboardType="numeric"
                 placeholder="0"
-                placeholderTextColor="#CBD5E1"
+                placeholderTextColor="#D6D3D1"
                 autoFocus
               />
             </View>
@@ -443,7 +443,7 @@ export default function KasirScreen() {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F8F9FC" },
+  root: { flex: 1, backgroundColor: "#FAF7F4" },
 
   // Toast
   toast: {
@@ -458,7 +458,7 @@ const s = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
   },
-  toastOk: { backgroundColor: "#1A1D1F" },
+  toastOk: { backgroundColor: "#059669" },
   toastErr: { backgroundColor: "#DC2626" },
   toastText: { fontSize: 12, fontWeight: "600", color: "#FFF" },
 
@@ -471,7 +471,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#FFFFFF",
   },
-  headerTitle: { fontSize: 16, fontWeight: "700", color: "#191C1E" },
+  headerTitle: { fontSize: 20, fontWeight: "700", color: "#1C1917" },
   headerMenuBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
 
   // Search Section
@@ -488,17 +488,17 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 48,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     borderRadius: 12,
     paddingHorizontal: 14,
     gap: 8,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#191C1E", padding: 0 },
+  searchInput: { flex: 1, fontSize: 14, color: "#1C1917", padding: 0 },
   scanBtn: {
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -522,7 +522,7 @@ const s = StyleSheet.create({
   searchCount: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#A8A29E",
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
@@ -534,15 +534,15 @@ const s = StyleSheet.create({
     gap: 10,
   },
   searchResultInfo: { flex: 1, marginRight: 8 },
-  searchResultName: { fontSize: 14, fontWeight: "600", color: "#191C1E" },
-  searchResultMeta: { fontSize: 11, color: "#94A3B8", marginTop: 1 },
-  searchResultPrice: { fontSize: 14, fontWeight: "700", color: "#1A1D1F" },
+  searchResultName: { fontSize: 14, fontWeight: "600", color: "#1C1917" },
+  searchResultMeta: { fontSize: 11, color: "#A8A29E", marginTop: 1 },
+  searchResultPrice: { fontSize: 14, fontWeight: "700", color: "#059669" },
   emptySearchBox: {
     alignItems: "center",
     paddingVertical: 20,
     gap: 4,
   },
-  emptySearchText: { fontSize: 13, color: "#94A3B8" },
+  emptySearchText: { fontSize: 13, color: "#A8A29E" },
 
   // Quick Dial
   quickRow: { flexDirection: "row", gap: 8, marginBottom: 20 },
@@ -554,17 +554,17 @@ const s = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 0.5,
-    borderColor: "#E2E8F0",
+    borderColor: "#E7E5E4",
   },
   quickBtnCustom: { flex: 0, width: 44 },
-  quickText: { fontSize: 14, fontWeight: "700", color: "#191C1E" },
+  quickText: { fontSize: 14, fontWeight: "700", color: "#1C1917" },
 
   // Recent Section
   recentSection: { marginBottom: 20 },
   recentLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 0.5,
     marginBottom: 10,
   },
@@ -577,13 +577,13 @@ const s = StyleSheet.create({
   recentName: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
     textAlign: "center",
     marginTop: 4,
   },
   recentPrice: {
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#A8A29E",
   },
 
   // Cart List
@@ -600,39 +600,39 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     gap: 10,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   cartItemLeft: { flex: 1, marginRight: 8 },
-  cartItemName: { fontSize: 14, fontWeight: "600", color: "#191C1E" },
-  cartItemMeta: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
+  cartItemName: { fontSize: 14, fontWeight: "600", color: "#1C1917" },
+  cartItemMeta: { fontSize: 12, color: "#A8A29E", marginTop: 2 },
   cartItemRight: { flexDirection: "row", alignItems: "center", gap: 8 },
   qtyBtn: {
     width: 26,
     height: 26,
     borderRadius: 6,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
   qtyVal: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     minWidth: 16,
     textAlign: "center",
   },
   cartItemSubtotal: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     minWidth: 60,
     textAlign: "right",
   },
 
   // Empty Cart
   emptyCartBox: { alignItems: "center", paddingVertical: 40, gap: 4 },
-  emptyCartTitle: { fontSize: 14, fontWeight: "600", color: "#94A3B8" },
-  emptyCartSub: { fontSize: 12, color: "#CBD5E1" },
+  emptyCartTitle: { fontSize: 14, fontWeight: "600", color: "#A8A29E" },
+  emptyCartSub: { fontSize: 12, color: "#D6D3D1" },
 
   // Docked Bar
   dockedBar: {
@@ -647,26 +647,31 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 0.5,
-    borderTopColor: "#F1F5F9",
+    borderTopColor: "#F5F5F4",
   },
   dockedLeft: { flex: 1 },
   dockedLabel: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginBottom: 2,
   },
-  dockedAmount: { fontSize: 18, fontWeight: "700", color: "#191C1E" },
+  dockedAmount: { fontSize: 18, fontWeight: "700", color: "#1C1917" },
   btnPay: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    height: 44,
-    paddingHorizontal: 20,
-    backgroundColor: "#1A1D1F",
-    borderRadius: 10,
+    height: 48,
+    paddingHorizontal: 24,
+    backgroundColor: "#059669",
+    borderRadius: 24,
+    shadowColor: "#059669",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  btnPayOff: { backgroundColor: "#CBD5E1" },
+  btnPayOff: { backgroundColor: "#D6D3D1" },
   btnPayText: { fontSize: 14, fontWeight: "700", color: "#FFF" },
 
   // Modal
@@ -680,38 +685,38 @@ const s = StyleSheet.create({
   modalHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#E7E5E4",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 16,
   },
-  modalTitle: { fontSize: 18, fontWeight: "700", color: "#191C1E", marginBottom: 16 },
+  modalTitle: { fontSize: 18, fontWeight: "700", color: "#1C1917", marginBottom: 16 },
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FAF7F4",
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
     marginBottom: 16,
   },
-  inputRp: { fontSize: 16, fontWeight: "600", color: "#94A3B8", marginRight: 6 },
-  inputField: { flex: 1, fontSize: 22, fontWeight: "700", color: "#191C1E", padding: 0 },
+  inputRp: { fontSize: 16, fontWeight: "600", color: "#A8A29E", marginRight: 6 },
+  inputField: { flex: 1, fontSize: 22, fontWeight: "700", color: "#1C1917", padding: 0 },
   modalActions: { flexDirection: "row", gap: 8 },
   btnModalCancel: {
     flex: 1,
     height: 44,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
-  btnModalCancelText: { fontSize: 14, fontWeight: "600", color: "#64748B" },
+  btnModalCancelText: { fontSize: 14, fontWeight: "600", color: "#57534E" },
   btnModalOk: {
     flex: 1,
     height: 44,
     borderRadius: 10,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
   },

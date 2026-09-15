@@ -262,7 +262,7 @@ export default function CheckoutScreen() {
                 onChangeText={setCashText}
                 keyboardType="numeric"
                 placeholder="0"
-                placeholderTextColor="#CBD5E1"
+                placeholderTextColor="#D6D3D1"
                 maxLength={11}
               />
             </View>
@@ -424,17 +424,17 @@ const s = StyleSheet.create({
   },
   backArrow: {
     fontSize: 20,
-    color: "#191C1E",
+    color: "#1C1917",
   },
   backLabel: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   navTitle: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
   },
 
   // Scroll
@@ -456,18 +456,18 @@ const s = StyleSheet.create({
   heroLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 1,
   },
   heroTotal: {
     fontSize: 34,
     fontWeight: "800",
-    color: "#191C1E",
+    color: "#1C1917",
     letterSpacing: -0.5,
   },
   heroMeta: {
     fontSize: 12,
-    color: "#64748B",
+    color: "#57534E",
   },
 
   // Cash Section (Under Metode Bayar)
@@ -477,10 +477,10 @@ const s = StyleSheet.create({
   inputBoxFull: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FAF7F4",
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: "#E2E8F0",
+    borderColor: "#E7E5E4",
     paddingHorizontal: 16,
     height: 56,
     marginBottom: 12,
@@ -488,14 +488,14 @@ const s = StyleSheet.create({
   inputRpFull: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginRight: 8,
   },
   inputFieldFull: {
     flex: 1,
     fontSize: 26,
     fontWeight: "800",
-    color: "#191C1E",
+    color: "#1C1917",
     padding: 0,
     margin: 0,
   },
@@ -510,7 +510,7 @@ const s = StyleSheet.create({
   },
   changeLabel: {
     fontSize: 14,
-    color: "#64748B",
+    color: "#57534E",
   },
   changeAmount: {
     fontSize: 24,
@@ -533,7 +533,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
   },
   quickLabel: {
     fontSize: 13,
@@ -545,7 +545,7 @@ const s = StyleSheet.create({
   secLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 1,
     marginBottom: 10,
   },
@@ -559,12 +559,12 @@ const s = StyleSheet.create({
     flex: 1,
     height: 42,
     borderRadius: 8,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
   methodBtnOn: {
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
   },
   methodText: {
     fontSize: 13,
@@ -583,7 +583,7 @@ const s = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 14,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   itemLeft: {
     flex: 1,
@@ -592,11 +592,11 @@ const s = StyleSheet.create({
   itemName: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   itemMeta: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginTop: 2,
   },
   itemRight: {
@@ -608,33 +608,33 @@ const s = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 6,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
   qtyMinus: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#57534E",
     lineHeight: 18,
   },
   qtyPlus: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1A1D1F",
+    color: "#059669",
     lineHeight: 18,
   },
   qtyVal: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     minWidth: 18,
     textAlign: "center",
   },
   itemSubtotal: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     minWidth: 70,
     textAlign: "right",
   },
@@ -650,13 +650,13 @@ const s = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 20,
     borderTopWidth: 0.5,
-    borderTopColor: "#F1F5F9",
+    borderTopColor: "#F5F5F4",
     gap: 8,
   },
   btnMain: {
     height: 52,
     borderRadius: 10,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -680,7 +680,7 @@ const s = StyleSheet.create({
     gap: 6,
   },
   btnCompactPrimary: {
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
   },
   btnCompactPrimaryText: {
     fontSize: 13,

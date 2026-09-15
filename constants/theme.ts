@@ -1,82 +1,100 @@
 /**
  * ============================================
- * DESIGN SYSTEM TOKENS - WARUNG POS
+ * DESIGN SYSTEM TOKENS - TRITOP JAYA
  * ============================================
+ * Brand: TRITOP JAYA (Warung POS)
+ * Primary: Emerald Green (#059669) — trust, money, professional
+ * Secondary: Warm Amber (#D97706) — complementary warm accent
+ * Surface: Warm off-white (#FAF7F4) — bukan cool gray generik
+ * Text: Near-black (#1C1917) — warm-tinted black, bukan pure #000
  */
 
 import { Platform } from "react-native";
 
 export const Colors = {
+  // PRIMARY — brand color (emerald)
   primary: {
-    main: "#1A1D1F",
-    light: "#2E3133",
-    dark: "#101113",
-    contrast: "#FFFFFF",
-    soft: "#F1F5F9",
-  },
-
-  secondary: {
     main: "#059669",
-    light: "#0EA476",
+    light: "#10B981",
     dark: "#047857",
-    container: "#D1FAE5",
-    onContainer: "#065F46",
+    contrast: "#FFFFFF",
+    soft: "#D1FAE5",
+  },
+
+  // SECONDARY — warm amber accent (pelengkap)
+  secondary: {
+    main: "#D97706",
+    light: "#F59E0B",
+    dark: "#B45309",
+    container: "#FEF3C7",
+    onContainer: "#92400E",
     contrast: "#FFFFFF",
   },
 
+  // STATUS colors
   accent: {
     success: "#059669",
-    warning: "#B45309",
+    warning: "#D97706",
     error: "#DC2626",
     info: "#2563EB",
   },
 
+  // NEUTRAL — warm-tinted scale (bukan cool blue-gray)
   neutral: {
-    50: "#FAFBFC",
-    100: "#F8F9FC",
-    200: "#F1F5F9",
-    300: "#E2E8F0",
-    400: "#CBD5E1",
-    500: "#94A3B8",
-    600: "#64748B",
-    700: "#475569",
-    800: "#334155",
-    900: "#191C1E",
+    50: "#FAFAF9",
+    100: "#F5F5F4",
+    200: "#E7E5E4",
+    300: "#D6D3D1",
+    400: "#A8A29E",
+    500: "#78716C",
+    600: "#57534E",
+    700: "#44403C",
+    800: "#292524",
+    900: "#1C1917",
   },
 
   text: {
-    primary: "#191C1E",
-    secondary: "#64748B",
-    muted: "#94A3B8",
-    disabled: "#CBD5E1",
+    primary: "#1C1917",
+    secondary: "#57534E",
+    muted: "#78716C",
+    disabled: "#A8A29E",
     inverse: "#FFFFFF",
   },
 
   background: {
-    primary: "#F8F9FC",
+    primary: "#FAF7F4",
     secondary: "#FFFFFF",
-    surface: "#F8F9FC",
+    surface: "#FAF7F4",
     elevated: "#FFFFFF",
-    inverse: "#1A1D1F",
+    inverse: "#1C1917",
   },
 
   border: {
-    light: "#F1F5F9",
-    main: "#E2E8F0",
-    dark: "#CBD5E1",
+    light: "#E7E5E4",
+    main: "#D6D3D1",
+    dark: "#A8A29E",
   },
 
   light: {
-    text: "#191C1E",
-    background: "#F8F9FC",
-    tint: "#1A1D1F",
-    icon: "#64748B",
-    tabIconDefault: "#94A3B8",
-    tabIconSelected: "#1A1D1F",
+    text: "#1C1917",
+    background: "#FAF7F4",
+    tint: "#059669",
+    icon: "#57534E",
+    tabIconDefault: "#A8A29E",
+    tabIconSelected: "#059669",
   },
 };
 
 export const Typography = {
+  // Level hierarki eksplisit — bukan fontSize random
+  display: { fontSize: 32, fontWeight: "700", lineHeight: 38 },
+  title: { fontSize: 22, fontWeight: "700", lineHeight: 28 },
+  headline: { fontSize: 18, fontWeight: "700", lineHeight: 24 },
+  body: { fontSize: 15, fontWeight: "400", lineHeight: 22 },
+  bodyStrong: { fontSize: 15, fontWeight: "600", lineHeight: 22 },
+  caption: { fontSize: 12, fontWeight: "500", lineHeight: 16 },
+  label: { fontSize: 11, fontWeight: "700", lineHeight: 14, letterSpacing: 0.5 },
+
   fontSize: {
     xs: 10,
     sm: 12,

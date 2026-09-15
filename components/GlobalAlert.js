@@ -38,19 +38,19 @@ const TYPE_META = {
   },
   confirm: {
     icon: "help_circle",
-    color: "#1A1D1F",
-    tint: "#F1F5F9",
+    color: "#059669",
+    tint: "#F5F5F4",
   },
 };
 
 const STYLE_BUTTON = {
   default: {
-    bg: "#1A1D1F",
+    bg: "#059669",
     text: "#FFFFFF",
   },
   cancel: {
-    bg: "#F1F5F9",
-    text: "#64748B",
+    bg: "#F5F5F4",
+    text: "#57534E",
   },
   destructive: {
     bg: "#DC2626",
@@ -154,12 +154,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     textAlign: "center",
   },
   message: {
     fontSize: 13,
-    color: "#64748B",
+    color: "#57534E",
     textAlign: "center",
     lineHeight: 19,
     marginTop: 8,

@@ -112,7 +112,7 @@ export default function PrinterScreen() {
       <View style={s.header}>
         <Text style={s.headerTitle}>Printer Bluetooth</Text>
         <TouchableOpacity style={s.closeBtn} onPress={() => router.back()}>
-          <MaterialIcon name="close" size={20} color="#191C1E" />
+          <MaterialIcon name="close" size={20} color="#1C1917" />
         </TouchableOpacity>
       </View>
 
@@ -149,7 +149,7 @@ export default function PrinterScreen() {
           onPress={handlePreviewText}
           activeOpacity={0.85}
         >
-          <MaterialIcon name="printer_outline" size={18} color="#1A1D1F" />
+          <MaterialIcon name="printer_outline" size={18} color="#059669" />
           <Text style={s.btnPreviewText}>Pratinjau Teks Struk (58mm)</Text>
         </TouchableOpacity>
 
@@ -159,7 +159,7 @@ export default function PrinterScreen() {
             <View style={s.secHeader}>
               <Text style={s.secLabel}>PERANGKAT PAIRING</Text>
               <TouchableOpacity onPress={loadDevices} disabled={loading}>
-                <MaterialIcon name="refresh" size={16} color="#64748B" />
+                <MaterialIcon name="refresh" size={16} color="#57534E" />
               </TouchableOpacity>
             </View>
 
@@ -205,7 +205,7 @@ export default function PrinterScreen() {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F8F9FC" },
+  root: { flex: 1, backgroundColor: "#FAF7F4" },
   header: {
     height: 52,
     flexDirection: "row",
@@ -214,14 +214,14 @@ const s = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
-  headerTitle: { fontSize: 16, fontWeight: "700", color: "#191C1E" },
+  headerTitle: { fontSize: 16, fontWeight: "700", color: "#1C1917" },
   closeBtn: {
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -233,11 +233,11 @@ const s = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#E7E5E4",
   },
-  cardLabel: { fontSize: 11, fontWeight: "700", color: "#94A3B8", letterSpacing: 0.8 },
-  cardName: { fontSize: 18, fontWeight: "700", color: "#191C1E", marginTop: 4 },
-  cardAddress: { fontSize: 12, color: "#64748B", marginTop: 2 },
+  cardLabel: { fontSize: 11, fontWeight: "700", color: "#A8A29E", letterSpacing: 0.8 },
+  cardName: { fontSize: 18, fontWeight: "700", color: "#1C1917", marginTop: 4 },
+  cardAddress: { fontSize: 12, color: "#57534E", marginTop: 2 },
 
   devBanner: {
     flexDirection: "row",
@@ -255,13 +255,13 @@ const s = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#E7E5E4",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     gap: 8,
   },
-  btnPreviewText: { fontSize: 14, fontWeight: "600", color: "#191C1E" },
+  btnPreviewText: { fontSize: 14, fontWeight: "600", color: "#1C1917" },
 
   secHeader: {
     flexDirection: "row",
@@ -269,8 +269,8 @@ const s = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  secLabel: { fontSize: 11, fontWeight: "700", color: "#94A3B8", letterSpacing: 0.8 },
-  emptyText: { fontSize: 13, color: "#94A3B8", textAlign: "center", marginVertical: 16 },
+  secLabel: { fontSize: 11, fontWeight: "700", color: "#A8A29E", letterSpacing: 0.8 },
+  emptyText: { fontSize: 13, color: "#A8A29E", textAlign: "center", marginVertical: 16 },
 
   cardGroup: {
     backgroundColor: "#FFFFFF",
@@ -283,16 +283,16 @@ const s = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 14,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   deviceInfo: { flex: 1 },
-  deviceName: { fontSize: 14, fontWeight: "600", color: "#191C1E" },
-  deviceAddr: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
+  deviceName: { fontSize: 14, fontWeight: "600", color: "#1C1917" },
+  deviceAddr: { fontSize: 12, color: "#A8A29E", marginTop: 2 },
 
   btnTest: {
     height: 48,
     borderRadius: 10,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 12,

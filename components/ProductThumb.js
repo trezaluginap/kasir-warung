@@ -44,14 +44,14 @@ export function ProductThumb({
           width: size,
           height: size,
           borderRadius: radius,
-          backgroundColor: "#F1F5F9",
+          backgroundColor: "#F5F5F4",
           justifyContent: "center",
           alignItems: "center",
         },
         style,
       ]}
     >
-      <MaterialIcon name={fallbackIcon} size={size * 0.5} color="#94A3B8" />
+      <MaterialIcon name={fallbackIcon} size={size * 0.5} color="#A8A29E" />
     </View>
   );
 }

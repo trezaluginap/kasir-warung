@@ -61,7 +61,7 @@ export default function SettingsScreen() {
           onPress={handleLogout}
           style={s.headerMenuBtn}
         >
-          <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+          <MaterialIcon name="account_circle" size={22} color="#059669" />
         </TouchableOpacity>
       </View>
 
@@ -75,7 +75,7 @@ export default function SettingsScreen() {
         <View style={s.cardGroup}>
           <View style={s.row}>
             <Text style={s.rowLabel}>Nama usaha</Text>
-            <Text style={s.rowValue}>Warung POS Berkah</Text>
+            <Text style={s.rowValue}>TRITOP JAYA</Text>
           </View>
           <View style={s.row}>
             <Text style={s.rowLabel}>Pemilik</Text>
@@ -105,9 +105,9 @@ export default function SettingsScreen() {
             <MaterialIcon
               name="printer_outline"
               size={18}
-              color="#1A1D1F"
+              color="#059669"
             />
-            <MaterialIcon name="arrow_forward" size={16} color="#94A3B8" />
+            <MaterialIcon name="arrow_forward" size={16} color="#A8A29E" />
           </TouchableOpacity>
           <View style={s.row}>
             <View style={s.rowInfo}>
@@ -118,7 +118,7 @@ export default function SettingsScreen() {
               value={autoPrint}
               onValueChange={setAutoPrint}
               disabled
-              trackColor={{ false: "#E2E8F0", true: "#1A1D1F" }}
+              trackColor={{ false: "#E7E5E4", true: "#059669" }}
               thumbColor="#FFF"
             />
           </View>
@@ -130,7 +130,7 @@ export default function SettingsScreen() {
             <Switch
               value={openDrawer}
               onValueChange={setOpenDrawer}
-              trackColor={{ false: "#E2E8F0", true: "#1A1D1F" }}
+              trackColor={{ false: "#E7E5E4", true: "#059669" }}
               thumbColor="#FFF"
             />
           </View>
@@ -173,7 +173,7 @@ export default function SettingsScreen() {
             <MaterialIcon
               name="arrow_forward"
               size={16}
-              color="#94A3B8"
+              color="#A8A29E"
             />
           </TouchableOpacity>
         </View>
@@ -194,7 +194,7 @@ export default function SettingsScreen() {
             <MaterialIcon
               name="arrow_forward"
               size={16}
-              color="#94A3B8"
+              color="#A8A29E"
             />
           </TouchableOpacity>
         </View>
@@ -219,7 +219,7 @@ export default function SettingsScreen() {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F8F9FC" },
+  root: { flex: 1, backgroundColor: "#FAF7F4" },
 
   // Header
   header: {
@@ -233,7 +233,7 @@ const s = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   headerMenuBtn: {
     width: 32,
@@ -254,7 +254,7 @@ const s = StyleSheet.create({
   secLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 0.8,
     marginTop: 20,
     marginBottom: 8,
@@ -272,7 +272,7 @@ const s = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 14,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   rowLast: {
     flexDirection: "row",
@@ -287,21 +287,21 @@ const s = StyleSheet.create({
   rowLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   rowMeta: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginTop: 2,
   },
   rowValue: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#57534E",
   },
   rowValueSub: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     textAlign: "right",
     flex: 1,
   },
@@ -319,14 +319,14 @@ const s = StyleSheet.create({
   btnSecondary: {
     height: 44,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
   btnSecondaryText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   btnDanger: {
     height: 44,

@@ -245,7 +245,7 @@ export default function ProductsScreen() {
           onPress={() => router.replace("/(tabs)")}
           style={s.headerMenuBtn}
         >
-          <MaterialIcon name="account_circle" size={22} color="#1A1D1F" />
+          <MaterialIcon name="account_circle" size={22} color="#059669" />
         </TouchableOpacity>
       </View>
 
@@ -262,17 +262,17 @@ export default function ProductsScreen() {
 
         {/* Search Bar */}
         <View style={s.searchBox}>
-          <MaterialIcon name="search" size={16} color="#94A3B8" />
+          <MaterialIcon name="search" size={16} color="#A8A29E" />
           <TextInput
             style={s.searchInput}
             placeholder="Cari produk..."
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#A8A29E"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery("")}>
-              <MaterialIcon name="close" size={16} color="#94A3B8" />
+              <MaterialIcon name="close" size={16} color="#A8A29E" />
             </TouchableOpacity>
           )}
         </View>
@@ -313,7 +313,7 @@ export default function ProductsScreen() {
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={
             <View style={s.emptyBox}>
-              <MaterialIcon name="inventory_2" size={28} color="#CBD5E1" />
+              <MaterialIcon name="inventory_2" size={28} color="#D6D3D1" />
               <Text style={s.emptyTitle}>Belum ada produk</Text>
               <Text style={s.emptySub}>Tap + untuk tambah</Text>
             </View>
@@ -341,7 +341,7 @@ export default function ProductsScreen() {
                     style={s.btnAction}
                     onPress={() => openEditModal(item)}
                   >
-                    <MaterialIcon name="edit" size={14} color="#64748B" />
+                    <MaterialIcon name="edit" size={14} color="#57534E" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={s.btnAction}
@@ -389,7 +389,7 @@ export default function ProductsScreen() {
                   <TextInput
                     style={s.fieldText}
                     placeholder="Contoh: Indomie Goreng"
-                    placeholderTextColor="#CBD5E1"
+                    placeholderTextColor="#D6D3D1"
                     value={nama}
                     onChangeText={setNama}
                   />
@@ -403,7 +403,7 @@ export default function ProductsScreen() {
                   <TextInput
                     style={[s.fieldText, s.fieldTextBold]}
                     placeholder="0"
-                    placeholderTextColor="#CBD5E1"
+                    placeholderTextColor="#D6D3D1"
                     keyboardType="numeric"
                     value={harga}
                     onChangeText={(t) => setHarga(formatCurrencyInput(t))}
@@ -444,7 +444,7 @@ export default function ProductsScreen() {
                   <TextInput
                     style={s.fieldText}
                     placeholder="24"
-                    placeholderTextColor="#CBD5E1"
+                    placeholderTextColor="#D6D3D1"
                     keyboardType="numeric"
                     value={stok}
                     onChangeText={setStok}
@@ -458,7 +458,7 @@ export default function ProductsScreen() {
                   <TextInput
                     style={s.fieldText}
                     placeholder="Nomor barcode produk"
-                    placeholderTextColor="#CBD5E1"
+                    placeholderTextColor="#D6D3D1"
                     keyboardType="numeric"
                     value={barcode}
                     onChangeText={setBarcode}
@@ -470,7 +470,7 @@ export default function ProductsScreen() {
                     <MaterialIcon
                       name="qr_code_scanner"
                       size={18}
-                      color="#1A1D1F"
+                      color="#059669"
                     />
                   </TouchableOpacity>
                 </View>
@@ -479,7 +479,7 @@ export default function ProductsScreen() {
               <View style={s.fieldGroup}>
                 <Text style={s.fieldLabel}>FOTO PRODUK (OPSIONAL)</Text>
                 <TouchableOpacity style={s.btnPickPhoto} onPress={handlePickImage}>
-                  <MaterialIcon name="image" size={18} color="#64748B" />
+                  <MaterialIcon name="image" size={18} color="#57534E" />
                   <Text style={s.btnPickPhotoText}>Pilih dari Galeri</Text>
                 </TouchableOpacity>
                 {foto ? (
@@ -524,7 +524,7 @@ export default function ProductsScreen() {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F8F9FC" },
+  root: { flex: 1, backgroundColor: "#FAF7F4" },
 
   // Header
   header: {
@@ -538,7 +538,7 @@ const s = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   headerMenuBtn: {
     width: 32,
@@ -558,7 +558,7 @@ const s = StyleSheet.create({
   // Counter
   counterText: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginBottom: 12,
   },
 
@@ -576,7 +576,7 @@ const s = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: "#191C1E",
+    color: "#1C1917",
     padding: 0,
   },
 
@@ -592,12 +592,12 @@ const s = StyleSheet.create({
     alignItems: "center",
   },
   catPillOn: {
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
   },
   catPillText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#57534E",
   },
   catPillTextOn: {
     color: "#FFF",
@@ -618,17 +618,17 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     gap: 10,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: "#F5F5F4",
   },
   productLeft: { flex: 1, marginRight: 12 },
   productName: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   productMeta: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginTop: 2,
   },
   productRight: {
@@ -639,7 +639,7 @@ const s = StyleSheet.create({
   productPrice: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
   },
   actionRow: {
     flexDirection: "row",
@@ -649,7 +649,7 @@ const s = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 6,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -663,11 +663,11 @@ const s = StyleSheet.create({
   emptyTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#A8A29E",
   },
   emptySub: {
     fontSize: 12,
-    color: "#CBD5E1",
+    color: "#D6D3D1",
   },
 
   // FAB
@@ -678,7 +678,7 @@ const s = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -704,7 +704,7 @@ const s = StyleSheet.create({
   modalHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#E7E5E4",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 16,
@@ -712,7 +712,7 @@ const s = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     marginBottom: 16,
   },
   modalForm: { maxHeight: 380 },
@@ -720,14 +720,14 @@ const s = StyleSheet.create({
   fieldLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#A8A29E",
     letterSpacing: 0.5,
     marginBottom: 6,
   },
   fieldInput: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FAF7F4",
     borderRadius: 10,
     paddingHorizontal: 12,
     height: 44,
@@ -735,13 +735,13 @@ const s = StyleSheet.create({
   fieldRp: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#A8A29E",
     marginRight: 6,
   },
   fieldText: {
     flex: 1,
     fontSize: 14,
-    color: "#191C1E",
+    color: "#1C1917",
     padding: 0,
   },
   fieldTextBold: {
@@ -752,7 +752,7 @@ const s = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -765,17 +765,17 @@ const s = StyleSheet.create({
     height: 32,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
   catChipOn: {
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
   },
   catChipText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#57534E",
   },
   catChipTextOn: {
     color: "#FFF",
@@ -786,17 +786,17 @@ const s = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     height: 44,
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FAF7F4",
     borderRadius: 10,
     paddingHorizontal: 14,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#E7E5E4",
     borderStyle: "dashed",
   },
   btnPickPhotoText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#57534E",
   },
   photoPreview: {
     flexDirection: "row",
@@ -804,13 +804,13 @@ const s = StyleSheet.create({
     gap: 10,
     marginTop: 8,
     padding: 10,
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FAF7F4",
     borderRadius: 8,
   },
   photoPreviewText: {
     flex: 1,
     fontSize: 12,
-    color: "#64748B",
+    color: "#57534E",
   },
 
   modalActions: {
@@ -822,20 +822,20 @@ const s = StyleSheet.create({
     flex: 1,
     height: 44,
     borderRadius: 10,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#F5F5F4",
     justifyContent: "center",
     alignItems: "center",
   },
   btnCancelText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#57534E",
   },
   btnSave: {
     flex: 1,
     height: 44,
     borderRadius: 10,
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
   },

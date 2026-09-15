@@ -7,7 +7,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { ICONS } from "../constants/icons";
 
-export function MaterialIcon({ name, size = 20, color = "#191C1E", style }) {
+export function MaterialIcon({ name, size = 20, color = "#1C1917", style }) {
   const glyph = ICONS[name] || name;
   return (
     <MaterialCommunityIcons

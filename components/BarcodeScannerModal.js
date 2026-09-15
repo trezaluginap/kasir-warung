@@ -88,7 +88,7 @@ export default function BarcodeScannerModal({ visible, onClose, onProductFound, 
     return (
       <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
         <View style={styles.permissionContainer}>
-          <MaterialIcon name="camera-off" size={64} color="#94A3B8" />
+          <MaterialIcon name="camera-off" size={64} color="#A8A29E" />
           <Text style={styles.permissionTitle}>Izin Kamera Diperlukan</Text>
           <Text style={styles.permissionText}>
             Aplikasi membutuhkan akses kamera untuk scan barcode produk.
@@ -230,7 +230,7 @@ export default function BarcodeScannerModal({ visible, onClose, onProductFound, 
                 <MaterialIcon
                   name={torch ? "flashlight" : "flashlight_off"}
                   size={20}
-                  color={torch ? "#1A1D1F" : "#FFFFFF"}
+                  color={torch ? "#059669" : "#FFFFFF"}
                 />
                 <Text style={[styles.flashText, torch && styles.flashTextOn]}>
                   {torch ? "Flash ON" : "Flash"}
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#16A34A",
+    backgroundColor: "#059669",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 14,
@@ -336,13 +336,13 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#191C1E",
+    color: "#1C1917",
     textAlign: "center",
   },
   successSub: {
     fontSize: 13,
     fontWeight: "500",
-    color: "#64748B",
+    color: "#57534E",
     marginTop: 4,
   },
   scanArea: {
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 44,
     height: 44,
-    borderColor: "#22C55E",
+    borderColor: "#10B981",
   },
   topLeft: {
     top: 0,
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   flashTextOn: {
-    color: "#1A1D1F",
+    color: "#059669",
   },
   zoomRow: {
     flexDirection: "row",
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#D6D3D1",
     textAlign: "center",
   },
   permissionContainer: {
@@ -482,24 +482,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FAF7F4",
   },
   permissionTitle: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#191C1E",
+    color: "#1C1917",
     marginTop: 20,
     marginBottom: 12,
   },
   permissionText: {
     fontSize: 14,
-    color: "#64748B",
+    color: "#57534E",
     textAlign: "center",
     lineHeight: 20,
     marginBottom: 30,
   },
   grantButton: {
-    backgroundColor: "#1A1D1F",
+    backgroundColor: "#059669",
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 8,
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   closeButtonText: {
-    color: "#64748B",
+    color: "#57534E",
     fontSize: 15,
     fontWeight: "500",
   },

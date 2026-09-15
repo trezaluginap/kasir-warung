@@ -1,6 +1,6 @@
 /**
  * ============================================
- * SCREEN LOGIN - WARUNG POS
+ * SCREEN LOGIN - TRITOP JAYA
  * ============================================
  *
  * Modern minimalist login dengan organic theme
@@ -60,10 +60,10 @@ export default function LoginScreen() {
         {/* Logo/Brand Section */}
         <View style={styles.brandSection}>
           <View style={styles.logoCircle}>
-            <Text style={styles.logoText}>W</Text>
+            <Text style={styles.logoText}>T</Text>
           </View>
-          <Text style={styles.brandTitle}>WARUNG POS</Text>
-          <Text style={styles.brandSubtitle}>Sistem Kasir Modern</Text>
+          <Text style={styles.brandTitle}>TRITOP JAYA</Text>
+          <Text style={styles.brandSubtitle}>Sistem Kasir Warung</Text>
         </View>
 
         {/* Login Card */}
@@ -114,7 +114,7 @@ export default function LoginScreen() {
         </View>
 
         {/* Footer */}
-        <Text style={styles.footerText}>Warung POS v1.0</Text>
+        <Text style={styles.footerText}>TRITOP JAYA v1.0</Text>
       </View>
     </SafeAreaView>
   );
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     ...Shadows.lg,
   },
   logoText: {
-    fontSize: Typography.fontSize["5xl"],
+    fontSize: Typography.fontSize["3xl"],
     fontWeight: Typography.fontWeight.bold,
     color: Colors.primary.contrast,
   },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   input: {
-    backgroundColor: Colors.background.tertiary,
+    backgroundColor: Colors.background.surface,
     borderWidth: 1.5,
     borderColor: Colors.border.light,
     borderRadius: BorderRadius.md,
