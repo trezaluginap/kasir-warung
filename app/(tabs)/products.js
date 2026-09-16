@@ -249,16 +249,19 @@ export default function ProductsScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
+      <FlatList
+        data={filteredList}
+        keyExtractor={(item) => String(item.id)}
+        contentContainerStyle={[s.scrollInner, s.productList]}
         style={s.scroll}
-        contentContainerStyle={s.scrollInner}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-      >
-        {/* Counter */}
-        <Text style={s.counterText}>
-          {allProdukList.length} produk terdaftar
-        </Text>
+        ListHeaderComponent={
+          <>
+            {/* Counter */}
+            <Text style={s.counterText}>
+              {allProdukList.length} produk terdaftar
+            </Text>
 
         {/* Search Bar */}
         <View style={s.searchBox}>
@@ -303,22 +306,16 @@ export default function ProductsScreen() {
           ))}
         </ScrollView>
 
-        {/* Product List — FlatList: virtualisasi, render hanya item yang terlihat */}
-        <FlatList
-          data={filteredList}
-          keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={[s.scrollInner, s.productList]}
-          style={s.scroll}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          ListEmptyComponent={
-            <View style={s.emptyBox}>
-              <MaterialIcon name="inventory_2" size={28} color="#D6D3D1" />
-              <Text style={s.emptyTitle}>Belum ada produk</Text>
-              <Text style={s.emptySub}>Tap + untuk tambah</Text>
-            </View>
-          }
-          renderItem={({ item, index: i, separators }) => (
+          </>
+        }
+        ListEmptyComponent={
+          <View style={s.emptyBox}>
+            <MaterialIcon name="inventory_2" size={28} color="#D6D3D1" />
+            <Text style={s.emptyTitle}>Belum ada produk</Text>
+            <Text style={s.emptySub}>Tap + untuk tambah</Text>
+          </View>
+        }
+        renderItem={({ item, index: i, separators }) => (
             <View key={String(item.id)} style={s.productRow}>
               <ProductThumb
                 foto={item.foto}
@@ -354,7 +351,6 @@ export default function ProductsScreen() {
             </View>
           )}
         />
-      </ScrollView>
 
       {/* FAB Tambah Produk */}
       <TouchableOpacity
