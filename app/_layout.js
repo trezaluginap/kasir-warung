@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View, useColorScheme } from "react-native";
 import "react-native-reanimated";
 
-import { initDatabase } from "../database/service";
+import { initDatabase, hapusTransaksiLama } from "../database/service";
 import useAuthStore from "../store/authStore";
 import { Colors } from "../constants/theme";
 import GlobalAlert from "../components/GlobalAlert";
@@ -27,8 +27,21 @@ export default function RootLayout() {
       try {
         console.log("Menginisialisasi database...");
         await initDatabase();
-        setIsDbReady(true);
-        console.log("Database siap digunakan");
+                setIsDbReady(true);
+                console.log("Database siap digunakan");
+
+                // ===== Auto-cleanup transaksi lama (silent, background) =====
+                // App start: hapus transaksi > 90 hari. TIDAK blokir app —
+                // fire-and-forget, log saja. Kenapa: DB tidak kegedean,
+                // riwayat tetap sehat tanpa user harus ingat maintenance.
+                try {
+                  const c = await hapusTransaksiLama(90);
+                  if (c > 0) {
+                    console.log(`🧹 Auto-cleanup: ${c} transaksi > 90 hari dihapus`);
+                  }
+                } catch (cleanupError) {
+                  console.error("⚠️ Auto-cleanup gagal:", cleanupError);
+                }
       } catch (error) {
         console.error("Error setup database:", error);
         const errorMessage =

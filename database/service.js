@@ -352,10 +352,9 @@ export const hapusTransaksiLama = async (hariLalu = 30) => {
     throw new Error("Database belum siap!");
   }
 
-  // Hitung tanggal X hari yang lalu
-  const tanggalBatas = new Date();
-  tanggalBatas.setDate(tanggalBatas.getDate() - hariLalu);
-  const batasWaktu = tanggalBatas.toISOString();
+  // Hitung timestamp X hari yang lalu (lebih robust daripada setDate:
+  // eksplisit millisekon, tidak tergantung timezone)
+  const batasWaktu = new Date(Date.now() - hariLalu * 24 * 60 * 60 * 1000);
 
   const query = `
     DELETE FROM transaksi
@@ -363,7 +362,7 @@ export const hapusTransaksiLama = async (hariLalu = 30) => {
   `;
 
   try {
-    const result = await dbInstance.runAsync(query, batasWaktu);
+    const result = await dbInstance.runAsync(query, batasWaktu.toISOString());
     console.log(`✅ Berhasil hapus ${result.changes} transaksi lama`);
     return result.changes;
   } catch (error) {

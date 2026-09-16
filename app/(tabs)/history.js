@@ -10,7 +10,7 @@
 
 import { useFocusEffect, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Modal,
   ScrollView,
@@ -24,7 +24,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { captureRef } from "react-native-view-shot";
 import { Colors, Spacing } from "../../constants/theme";
-import { ambilSemuaTransaksi } from "../../database/service";
+import { ambilSemuaTransaksi, hapusTransaksi, hapusTransaksiLama } from "../../database/service";
 import useAuthStore from "../../store/authStore";
 import { MaterialIcon } from "../../components/MaterialIcon";
 import ReceiptView from "../../components/ReceiptView";
@@ -38,6 +38,7 @@ export default function HistoryScreen() {
   const receiptRef = useRef(null);
   const [transaksiList, setTransaksiList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState("all"); // all | 1 | 7 | 30
   const [selectedTrx, setSelectedTrx] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [shareTrx, setShareTrx] = useState(null);
@@ -74,7 +75,12 @@ export default function HistoryScreen() {
   const loadTransaksi = useCallback(async () => {
     try {
       const list = await ambilSemuaTransaksi();
-      setTransaksiList(list);
+      // Precompute timestamp sekali (hindari new Date() di render body)
+      const enriched = list.map((trx) => ({
+        ...trx,
+        _ts: new Date(trx.waktuTransaksi).getTime() || 0,
+      }));
+      setTransaksiList(enriched);
     } catch (error) {
       console.error("Error load:", error);
     }
@@ -108,8 +114,24 @@ export default function HistoryScreen() {
     });
   };
 
-  // Filter
+  // Filter (date + search)
+  // NOTE: Hindari Date.now() saat render (impure).
+  // Cutoff = max timestamp dari data (bukan jam sekarang) —
+  // konsisten untuk "7 hari terakhir" relatif data terbaru.
+  const latestTs = transaksiList.reduce(
+    (max, t) => (t._ts > max ? t._ts : max),
+    0,
+  );
+
   const filteredList = transaksiList.filter((trx) => {
+    // Filter tanggal
+    if (dateFilter !== "all" && latestTs > 0) {
+      const days = parseInt(dateFilter, 10);
+      const cutoff = latestTs - days * 24 * 60 * 60 * 1000;
+      if (trx._ts < cutoff) return false;
+    }
+
+    // Filter search
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase().trim();
     const matchId = trx.id.toString().includes(q);
@@ -122,11 +144,12 @@ export default function HistoryScreen() {
     return matchId || matchTime || matchItems || matchPrice;
   });
 
-  const totalOmset = transaksiList.reduce(
+  // Summary berdasarkan filter (omzet sesuai apa yang terlihat)
+  const totalOmset = filteredList.reduce(
     (sum, t) => sum + (t.totalHarga || 0),
     0,
   );
-  const totalQty = transaksiList.reduce(
+  const totalQty = filteredList.reduce(
     (sum, t) =>
       sum + (t.daftarBarang || []).reduce((s, i) => s + (i.qty || 0), 0),
     0,
@@ -174,6 +197,51 @@ export default function HistoryScreen() {
     }
   };
 
+  // ===== Hapus satu transaksi (dari detail modal) =====
+  const handleDelete = (trx) => {
+    showConfirm({
+      title: "Hapus Transaksi?",
+      message: `#TRX-${trx.id} akan dihapus permanen. Tidak bisa dikembalikan.`,
+      confirmText: "Hapus",
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await hapusTransaksi(trx.id);
+          setShowModal(false);
+          setSelectedTrx(null);
+          await loadTransaksi();
+          showSuccess("Terhapus", `#TRX-${trx.id} dihapus dari riwayat.`);
+        } catch (e) {
+          showError("Gagal Hapus", e.message);
+        }
+      },
+    });
+  };
+
+  // ===== Cleanup manual: hapus transaksi > 90 hari =====
+  const handleCleanup = () => {
+    showConfirm({
+      title: "Bersihkan Riwayat Lama?",
+      message:
+        "Semua transaksi lebih dari 90 hari akan dihapus permanen. Data tidak bisa dikembalikan.",
+      confirmText: "Bersihkan",
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          const c = await hapusTransaksiLama(90);
+          await loadTransaksi();
+          if (c > 0) {
+            showSuccess("Selesai", `${c} transaksi lama dibersihkan.`);
+          } else {
+            showInfo("Tidak Ada", "Tidak ada transaksi lebih dari 90 hari.");
+          }
+        } catch (e) {
+          showError("Gagal Bersihkan", e.message);
+        }
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={s.root}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -189,6 +257,12 @@ export default function HistoryScreen() {
             style={s.headerMenuBtn}
           >
             <MaterialIcon name="refresh" size={18} color="#059669" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleCleanup}
+            style={s.headerMenuBtn}
+          >
+            <MaterialIcon name="delete_sweep" size={18} color="#DC2626" />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -218,13 +292,47 @@ export default function HistoryScreen() {
       >
         {/* Summary */}
         <View style={s.summaryBox}>
-          <Text style={s.summaryLabel}>OMZET HARI INI</Text>
+          <Text style={s.summaryLabel}>
+          {dateFilter === "1"
+            ? "OMZET HARI INI"
+            : dateFilter === "7"
+              ? "OMZET 7 HARI"
+              : dateFilter === "30"
+                ? "OMZET 30 HARI"
+                : "TOTAL OMZET"}
+        </Text>
           <Text style={s.summaryAmount}>
             {formatRupiah(totalOmset)}
           </Text>
           <Text style={s.summaryMeta}>
             {transaksiList.length} transaksi • {totalQty} item
           </Text>
+        </View>
+
+        {/* Filter Tanggal */}
+        <View style={s.filterRow}>
+          {[
+            { key: "all", label: "Semua" },
+            { key: "1", label: "Hari Ini" },
+            { key: "7", label: "7 Hari" },
+            { key: "30", label: "30 Hari" },
+          ].map((f) => (
+            <TouchableOpacity
+              key={f.key}
+              style={[s.filterPill, dateFilter === f.key && s.filterPillOn]}
+              onPress={() => setDateFilter(f.key)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  s.filterPillText,
+                  dateFilter === f.key && s.filterPillTextOn,
+                ]}
+              >
+                {f.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
         {/* Search */}
@@ -358,6 +466,14 @@ export default function HistoryScreen() {
               <MaterialIcon name="share" size={16} color="#FFF" />
               <Text style={s.btnModalShareText}>Bagikan</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={s.btnModalDelete}
+              onPress={() => handleDelete(selectedTrx)}
+            >
+              <MaterialIcon name="delete" size={16} color="#DC2626" />
+              <Text style={s.btnModalDeleteText}>Hapus</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -437,6 +553,33 @@ const s = StyleSheet.create({
   summaryMeta: {
     fontSize: 12,
     color: "#A8A29E",
+  },
+
+  // Filter Tanggal
+  filterRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 12,
+  },
+  filterPill: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E7E5E4",
+  },
+  filterPillOn: {
+    backgroundColor: "#059669",
+    borderColor: "#059669",
+  },
+  filterPillText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#57534E",
+  },
+  filterPillTextOn: {
+    color: "#FFFFFF",
   },
 
   // Search
@@ -622,12 +765,29 @@ const s = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#25D366",
     marginTop: 8,
+    marginBottom: 8,
   },
   btnModalShareText: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#FFF",
-  },
+      fontSize: 14,
+      fontWeight: "700",
+      color: "#FFFFFF",
+    },
+    btnModalDelete: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      height: 44,
+      borderRadius: 10,
+      backgroundColor: "#FEE2E2",
+      borderWidth: 1,
+      borderColor: "#FECACA",
+    },
+    btnModalDeleteText: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: "#DC2626",
+    },
   receiptCanvas: {
     position: "absolute",
     top: 0,
