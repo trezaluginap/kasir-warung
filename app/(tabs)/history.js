@@ -159,8 +159,8 @@ export default function HistoryScreen() {
         waktu: trx.waktuTransaksi,
         items: trx.daftarBarang || [],
         total: trx.totalHarga,
-        totalBayar: trx.totalHarga,
-        kembalian: 0,
+        totalBayar: trx.uangBayar || trx.totalHarga,
+        kembalian: trx.uangKembali || 0,
       });
       if (res.success) {
         showSuccess("Struk Tercetak", `#TRX-${trx.id} berhasil dicetak.`);
@@ -369,8 +369,8 @@ export default function HistoryScreen() {
             <ReceiptView
               transaksi={{ total: shareTrx.totalHarga }}
               items={shareTrx.daftarBarang || []}
-              totalBayar={shareTrx.totalHarga}
-              kembalian={0}
+              totalBayar={shareTrx.uangBayar || shareTrx.totalHarga}
+              kembalian={shareTrx.uangKembali || 0}
             />
           </View>
         </View>

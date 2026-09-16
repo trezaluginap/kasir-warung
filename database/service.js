@@ -85,14 +85,32 @@ const createTransactionsTable = async () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       total_harga REAL NOT NULL,
       daftar_barang TEXT NOT NULL,
-      waktu_transaksi TEXT NOT NULL
+      waktu_transaksi TEXT NOT NULL,
+      uang_bayar REAL DEFAULT 0,
+      uang_kembali REAL DEFAULT 0
     );
   `;
 
   try {
-    await db.execAsync(query);
-    console.log("✅ Tabel transaksi siap digunakan!");
-  } catch (error) {
+      await db.execAsync(query);
+      console.log("✅ Tabel transaksi siap digunakan!");
+
+      // ===== Migrasi non-destruktif untuk DB lama =====
+      // DB lama tidak punya kolom uang_bayar/uang_kembali.
+      // Cek dulu kolom yang ada, baru ALTER TABLE ADD COLUMN jika belum ada.
+      // Data transaksi lama TIDAK dihapus.
+      const transaksiCols = await db.getAllAsync("PRAGMA table_info(transaksi)");
+      const existingCols = transaksiCols.map((c) => c.name);
+
+      if (!existingCols.includes("uang_bayar")) {
+        await db.execAsync("ALTER TABLE transaksi ADD COLUMN uang_bayar REAL DEFAULT 0");
+        console.log("✅ Migrasi: kolom uang_bayar ditambahkan");
+      }
+      if (!existingCols.includes("uang_kembali")) {
+        await db.execAsync("ALTER TABLE transaksi ADD COLUMN uang_kembali REAL DEFAULT 0");
+        console.log("✅ Migrasi: kolom uang_kembali ditambahkan");
+      }
+    } catch (error) {
     console.error("❌ Error bikin tabel:", error);
     throw error;
   }
@@ -109,7 +127,7 @@ const createTransactionsTable = async () => {
  *   ]
  * @returns {Object} Data transaksi yang baru disimpan
  */
-export const simpanTransaksi = async (totalHarga, daftarBarang) => {
+export const simpanTransaksi = async (totalHarga, daftarBarang, uangBayar = 0, uangKembali = 0) => {
   // Validasi input
   if (typeof totalHarga !== "number" || totalHarga <= 0) {
     throw new Error("Total harga harus berupa angka positif!");
@@ -133,8 +151,8 @@ export const simpanTransaksi = async (totalHarga, daftarBarang) => {
   const waktuTransaksi = new Date().toISOString();
 
   const query = `
-    INSERT INTO transaksi (total_harga, daftar_barang, waktu_transaksi)
-    VALUES (?, ?, ?);
+    INSERT INTO transaksi (total_harga, daftar_barang, waktu_transaksi, uang_bayar, uang_kembali)
+    VALUES (?, ?, ?, ?, ?);
   `;
 
   try {
@@ -143,17 +161,21 @@ export const simpanTransaksi = async (totalHarga, daftarBarang) => {
       totalHarga,
       daftarBarangJSON,
       waktuTransaksi,
+      uangBayar,
+      uangKembali,
     );
 
     console.log("✅ Transaksi berhasil disimpan! ID:", result.lastInsertRowId);
 
     // Return data transaksi yang baru disimpan
-    return {
-      id: result.lastInsertRowId,
-      totalHarga,
-      daftarBarang,
-      waktuTransaksi,
-    };
+        return {
+          id: result.lastInsertRowId,
+          totalHarga,
+          daftarBarang,
+          waktuTransaksi,
+          uangBayar,
+          uangKembali,
+        };
   } catch (error) {
     console.error("❌ Error simpan transaksi:", error);
     throw error;
@@ -188,12 +210,14 @@ export const ambilSemuaTransaksi = async (limit = null) => {
     const rows = await dbInstance.getAllAsync(query);
 
     // Parse JSON string jadi object lagi
-    const transaksiList = rows.map((row) => ({
-      id: row.id,
-      totalHarga: row.total_harga,
-      daftarBarang: JSON.parse(row.daftar_barang),
-      waktuTransaksi: row.waktu_transaksi,
-    }));
+        const transaksiList = rows.map((row) => ({
+          id: row.id,
+          totalHarga: row.total_harga,
+          daftarBarang: JSON.parse(row.daftar_barang),
+          waktuTransaksi: row.waktu_transaksi,
+          uangBayar: row.uang_bayar || 0,
+          uangKembali: row.uang_kembali || 0,
+        }));
 
     console.log(`✅ Berhasil ambil ${transaksiList.length} transaksi`);
     return transaksiList;
@@ -230,11 +254,13 @@ export const ambilTransaksiById = async (id) => {
     }
 
     return {
-      id: row.id,
-      totalHarga: row.total_harga,
-      daftarBarang: JSON.parse(row.daftar_barang),
-      waktuTransaksi: row.waktu_transaksi,
-    };
+          id: row.id,
+          totalHarga: row.total_harga,
+          daftarBarang: JSON.parse(row.daftar_barang),
+          waktuTransaksi: row.waktu_transaksi,
+          uangBayar: row.uang_bayar || 0,
+          uangKembali: row.uang_kembali || 0,
+        };
   } catch (error) {
     console.error("❌ Error ambil transaksi by ID:", error);
     throw error;

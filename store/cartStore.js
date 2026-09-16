@@ -204,7 +204,7 @@ const useCartStore = create((set, get) => ({
    *
    * @returns {Object} Result dengan status dan data transaksi
    */
-  checkout: async () => {
+  checkout: async (uangBayar = 0, uangKembali = 0) => {
     const { items, totalHarga } = get();
 
     // Validasi: keranjang ga boleh kosong
@@ -240,7 +240,7 @@ const useCartStore = create((set, get) => ({
       });
 
       // Simpan ke database
-      const transaksi = await simpanTransaksi(totalHarga, daftarBarang);
+            const transaksi = await simpanTransaksi(totalHarga, daftarBarang, uangBayar, uangKembali);
 
       // Update recent store untuk barang terakhir dibeli
       const recentStore = useRecentStore.getState();

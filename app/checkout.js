@@ -119,7 +119,7 @@ export default function CheckoutScreen() {
     }
     setProcessing(true);
     try {
-      const r = await checkout();
+      const r = await checkout(payMethod === "tunai" ? cash : 0, payMethod === "tunai" ? Math.max(0, cash - totalHarga) : 0);
       if (r.success) {
         const kembalian =
           payMethod === "tunai" ? Math.max(0, cash - totalHarga) : 0;

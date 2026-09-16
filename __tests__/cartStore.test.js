@@ -92,7 +92,7 @@ describe("cartStore — checkout", () => {
     st.tambahProduk({ id: 3, nama: "Chitato", harga: 8000 });
     st.tambahJajanan(2000);
 
-    const result = await st.checkout();
+    const result = await st.checkout(20000, 10000);
 
     expect(result.success).toBe(true);
     expect(simpanTransaksi).toHaveBeenCalledTimes(1);
@@ -102,6 +102,8 @@ describe("cartStore — checkout", () => {
         expect.objectContaining({ nama: "Chitato", qty: 1, harga: 8000 }),
         expect.objectContaining({ nama: "Jajanan Rp 2.000", qty: 1, harga: 2000 }),
       ]),
+      20000,
+      10000,
     );
 
     // Keranjang leeg na succesvolle checkout
