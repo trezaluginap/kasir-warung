@@ -36,6 +36,7 @@ import useAuthStore from "../../store/authStore";
 import { MaterialIcon } from "../../components/MaterialIcon";
 import { ProductThumb } from "../../components/ProductThumb";
 import BarcodeScannerModal from "../../components/BarcodeScannerModal";
+import { uploadProductPhoto } from "../../services/storageService";
 import { showWarning, showError, showConfirm } from "../../utils/alertHelper";
 
 export default function ProductsScreen() {
@@ -226,7 +227,16 @@ export default function ProductsScreen() {
         const source = new File(uri);
         const dest = new File(Paths.document, fileName);
         await source.copy(dest, { overwrite: true });
+
+        // Local-first: simpan dulu URI lokal (instan, offline aman)
         setFoto(dest.uri);
+
+        // KALAU Supabase dikonfigurasi: upload ke cloud, pakai PUBLIC URL
+        // (foto survive reset device). Kalau gagal/offline -> tetap URI lokal.
+        const publicUrl = await uploadProductPhoto(dest.uri);
+        if (publicUrl) {
+          setFoto(publicUrl);
+        }
       } catch (error) {
         console.error("Error copy image:", error);
         showError("Gagal menyimpan foto", "Terjadi kesalahan saat menyalin foto.");

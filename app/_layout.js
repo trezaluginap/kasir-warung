@@ -8,6 +8,7 @@ import { initDatabase } from "../database/service";
 import useAuthStore from "../store/authStore";
 import { Colors } from "../constants/theme";
 import GlobalAlert from "../components/GlobalAlert";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
 
 
@@ -78,24 +79,26 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.background.primary }}>
-      <Stack>
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="checkout" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
-        <Stack.Screen
-          name="printer"
-          options={{ presentation: "modal", title: "Printer" }}
-        />
-      </Stack>
-      <StatusBar style="auto" />
-      <GlobalAlert />
-    </View>
-  );
+      <ErrorBoundary>
+        <View style={{ flex: 1, backgroundColor: Colors.background.primary }}>
+          <Stack>
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="checkout" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="modal"
+              options={{ presentation: "modal", title: "Modal" }}
+            />
+            <Stack.Screen
+              name="printer"
+              options={{ presentation: "modal", title: "Printer" }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+          <GlobalAlert />
+        </View>
+      </ErrorBoundary>
+    );
 }
 
 const styles = StyleSheet.create({
