@@ -37,6 +37,7 @@ import { MaterialIcon } from "../../components/MaterialIcon";
 import { ProductThumb } from "../../components/ProductThumb";
 import BarcodeScannerModal from "../../components/BarcodeScannerModal";
 import { uploadProductPhoto } from "../../services/storageService";
+import { PressableScale } from "../../components/animations";
 import { showWarning, showError, showConfirm } from "../../utils/alertHelper";
 
 export default function ProductsScreen() {
@@ -363,13 +364,13 @@ export default function ProductsScreen() {
         />
 
       {/* FAB Tambah Produk */}
-      <TouchableOpacity
+      <PressableScale
         style={s.fab}
         onPress={openAddModal}
-        activeOpacity={0.85}
+        scaleTo={0.88}
       >
         <MaterialIcon name="add" size={26} color="#FFF" />
-      </TouchableOpacity>
+      </PressableScale>
 
       {/* Form Modal */}
       <Modal

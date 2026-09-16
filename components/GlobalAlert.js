@@ -14,6 +14,7 @@ import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAlertStore from "../store/alertStore";
 import { MaterialIcon } from "./MaterialIcon";
+import Animated, { FadeInUp, ZoomIn } from "react-native-reanimated";
 
 const TYPE_META = {
   success: {
@@ -86,40 +87,40 @@ export default function GlobalAlert() {
       onRequestClose={() => dismiss()}
     >
       <View style={styles.overlay}>
-        <View style={styles.card}>
-          <View
-            style={[
-              styles.iconCircle,
-              { backgroundColor: meta.tint },
-            ]}
-          >
-            <MaterialIcon name={meta.icon} size={30} color={meta.color} />
-          </View>
-
-          <Text style={styles.title}>{dialog.title || "Perhatian"}</Text>
-
-          {dialog.message ? (
-            <Text style={styles.message}>{dialog.message}</Text>
-          ) : null}
-
-          <View style={styles.btnRow}>
-            {buttons.map((btn, idx) => {
-              const btnStyle = STYLE_BUTTON[btn.style] || STYLE_BUTTON.default;
-              return (
-                <TouchableOpacity
-                  key={idx}
-                  style={[styles.btn, { backgroundColor: btnStyle.bg }]}
-                  onPress={() => handlePress(btn)}
-                  activeOpacity={0.85}
+              <Animated.View entering={FadeInUp.duration(220).springify()} style={styles.card}>
+                <Animated.View
+                  entering={ZoomIn.duration(300)}
+                  style={[
+                    styles.iconCircle,
+                    { backgroundColor: meta.tint },
+                  ]}
                 >
-                  <Text style={[styles.btnText, { color: btnStyle.text }]}>
-                    {btn.text}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
+                  <MaterialIcon name={meta.icon} size={30} color={meta.color} />
+                </Animated.View>
+
+                <Text style={styles.title}>{dialog.title || "Perhatian"}</Text>
+
+                {dialog.message ? (
+                  <Text style={styles.message}>{dialog.message}</Text>
+                ) : null}
+                <View style={styles.btnRow}>
+                  {buttons.map((btn, idx) => {
+                    const btnStyle = STYLE_BUTTON[btn.style] || STYLE_BUTTON.default;
+                    return (
+                      <TouchableOpacity
+                        key={idx}
+                        style={[styles.btn, { backgroundColor: btnStyle.bg }]}
+                        onPress={() => handlePress(btn)}
+                        activeOpacity={0.85}
+                      >
+                        <Text style={[styles.btnText, { color: btnStyle.text }]}>
+                          {btn.text}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </Animated.View>
       </View>
     </Modal>
   );

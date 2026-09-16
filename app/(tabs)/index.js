@@ -30,6 +30,8 @@ import useAuthStore from "../../store/authStore";
 import { showConfirm } from "../../utils/alertHelper";
 import useCartStore from "../../store/cartStore";
 import { useRecentStore } from "../../store/recentStore";
+import { PressableScale, AnimatedNumber } from "../../components/animations";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 const QUICK_DIALS = [
   { label: "1.000", price: 1000 },
@@ -161,14 +163,14 @@ export default function KasirScreen() {
 
       {/* Toast */}
       {showToast && (
-        <View style={[s.toast, toastIsError ? s.toastErr : s.toastOk]}>
+        <Animated.View entering={FadeInDown.duration(200)} style={[s.toast, toastIsError ? s.toastErr : s.toastOk]}>
           <MaterialIcon
             name={toastIsError ? "warning" : "check"}
             size={14}
             color="#FFF"
           />
           <Text style={s.toastText}>{toastMessage}</Text>
-        </View>
+        </Animated.View>
       )}
 
       {/* Header */}
@@ -378,17 +380,17 @@ export default function KasirScreen() {
       <View style={s.dockedBar}>
         <View style={s.dockedLeft}>
           <Text style={s.dockedLabel}>{totalQty} item</Text>
-          <Text style={s.dockedAmount}>{formatRupiah(totalHarga)}</Text>
+          <AnimatedNumber value={totalHarga} style={s.dockedAmount} />
         </View>
-        <TouchableOpacity
+        <PressableScale
           style={[s.btnPay, items.length === 0 && s.btnPayOff]}
           onPress={handleGoToCheckout}
           disabled={items.length === 0}
-          activeOpacity={0.85}
+          scaleTo={0.95}
         >
           <Text style={s.btnPayText}>Bayar</Text>
           <MaterialIcon name="arrow_forward" size={16} color="#FFF" />
-        </TouchableOpacity>
+        </PressableScale>
       </View>
 
       {/* Custom Price Modal */}
