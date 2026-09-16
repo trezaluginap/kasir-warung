@@ -23,6 +23,7 @@ import Animated, {
   FadeInDown,
   FadeInUp,
   ZoomIn,
+  runOnJS,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
@@ -45,7 +46,9 @@ export function PressableScale({ children, style, scaleTo = 0.94, onPress, disab
       scale.value = withSpring(1, { damping: 12, stiffness: 250 });
     })
     .onEnd(() => {
-      if (onPress && !disabled) onPress();
+      if (onPress && !disabled) {
+        runOnJS(onPress)();
+      }
     });
 
   const animStyle = useAnimatedStyle(() => ({
