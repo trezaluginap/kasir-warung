@@ -103,7 +103,8 @@ const migrateProductsTable = async () => {
     const columns = await db.getAllAsync("PRAGMA table_info(products)");
     const hasFoto = columns.some((c) => c.name === "foto");
     const hasBarcode = columns.some((c) => c.name === "barcode");
-    
+    const hasSyncId = columns.some((c) => c.name === "sync_id");
+
     if (!hasFoto) {
       await db.execAsync("ALTER TABLE products ADD COLUMN foto TEXT DEFAULT NULL");
       console.log("✅ Migration: column foto ditambahkan");
@@ -112,6 +113,28 @@ const migrateProductsTable = async () => {
       await db.execAsync("ALTER TABLE products ADD COLUMN barcode TEXT DEFAULT NULL");
       console.log("✅ Migration: column barcode ditambahkan");
     }
+    if (!hasSyncId) {
+          await db.execAsync(
+            "ALTER TABLE products ADD COLUMN sync_id TEXT DEFAULT NULL",
+          );
+          console.log("✅ Migration: column sync_id ditambahkan");
+        }
+
+        // Backfill: produk existing tanpa sync_id -> generate
+        const nullSync = await db.getAllAsync(
+          "SELECT id FROM products WHERE sync_id IS NULL",
+        );
+        if (nullSync.length > 0) {
+          for (const row of nullSync) {
+            const syncId = generateSyncId();
+            await db.runAsync(
+              "UPDATE products SET sync_id = ? WHERE id = ?",
+              syncId,
+              row.id,
+            );
+          }
+          console.log(`✅ Backfill sync_id: ${nullSync.length} produk`);
+        }
   } catch (error) {
     console.error("❌ Error migrate table products:", error);
   }
@@ -233,23 +256,26 @@ export const tambahProduk = async (data) => {
     throw new Error("Database belum siap!");
   }
 
-  const { nama, harga, kategori = "Umum", stok = null, foto = null, barcode = null } = data;
+  const { nama, harga, kategori = "Umum", stok = null, foto = null, barcode = null, sync_id = null } = data;
 
   if (!nama || !harga) {
     throw new Error("Nama dan harga wajib diisi!");
   }
 
   const now = new Date().toISOString();
+  // sync_id global unik — set kalao tidak ada
+  const syncId = sync_id || generateSyncId();
 
   try {
     const result = await dbInstance.runAsync(
-      "INSERT INTO products (nama, harga, kategori, stok, foto, barcode, aktif, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)",
+      "INSERT INTO products (nama, harga, kategori, stok, foto, barcode, sync_id, aktif, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)",
       nama,
       harga,
       kategori,
       stok,
       foto,
       barcode,
+      syncId,
       now,
       now,
     );
@@ -264,6 +290,7 @@ export const tambahProduk = async (data) => {
       stok,
       foto,
       barcode,
+      sync_id: syncId,
       aktif: 1,
       created_at: now,
       updated_at: now,
@@ -355,36 +382,40 @@ export const updateProduk = async (id, data) => {
     throw new Error("Database belum siap!");
   }
 
-  const { nama, harga, kategori, stok, foto, barcode } = data;
-  const now = new Date().toISOString();
+  const { nama, harga, kategori, stok, foto, barcode, sync_id } = data;
+    const now = new Date().toISOString();
 
-  const updates = [];
-  const params = [];
+    const updates = [];
+    const params = [];
 
-  if (nama !== undefined) {
-    updates.push("nama = ?");
-    params.push(nama);
-  }
-  if (harga !== undefined) {
-    updates.push("harga = ?");
-    params.push(harga);
-  }
-  if (kategori !== undefined) {
-    updates.push("kategori = ?");
-    params.push(kategori);
-  }
-  if (stok !== undefined) {
-    updates.push("stok = ?");
-    params.push(stok);
-  }
-  if (foto !== undefined) {
-    updates.push("foto = ?");
-    params.push(foto);
-  }
-  if (barcode !== undefined) {
-    updates.push("barcode = ?");
-    params.push(barcode);
-  }
+    if (nama !== undefined) {
+      updates.push("nama = ?");
+      params.push(nama);
+    }
+    if (harga !== undefined) {
+      updates.push("harga = ?");
+      params.push(harga);
+    }
+    if (kategori !== undefined) {
+      updates.push("kategori = ?");
+      params.push(kategori);
+    }
+    if (stok !== undefined) {
+      updates.push("stok = ?");
+      params.push(stok);
+    }
+    if (foto !== undefined) {
+      updates.push("foto = ?");
+      params.push(foto);
+    }
+    if (barcode !== undefined) {
+      updates.push("barcode = ?");
+      params.push(barcode);
+    }
+    if (sync_id !== undefined) {
+      updates.push("sync_id = ?");
+      params.push(sync_id);
+    }
 
   updates.push("updated_at = ?");
   params.push(now);
@@ -407,7 +438,39 @@ export const updateProduk = async (id, data) => {
 };
 
 /**
- * Hapus produk (soft delete - set aktif = 0)
+ * Generate sync_id global unique untuk sync multi-device
+ * (id local AUTOINCREMENT berbeda per device — tidak bisa untuk cloud key)
+ */
+export const generateSyncId = () =>
+  `p_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+
+/**
+ * Set sync_id untuk produk (dipakai saat sync download
+ * supaya idempotent — produk dari cloud punya sync_id tetap)
+ */
+export const setProdukSyncId = async (id, syncId) => {
+  const dbInstance = await getDatabase();
+
+  if (!dbInstance) {
+    throw new Error("Database belum siap!");
+  }
+
+  try {
+    await dbInstance.runAsync(
+      "UPDATE products SET sync_id = ?, updated_at = ? WHERE id = ?",
+      syncId,
+      new Date().toISOString(),
+      id,
+    );
+    return true;
+  } catch (error) {
+    console.error("❌ Error set sync_id:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fungsi untuk hapus produk (soft delete - set aktif = 0)
  *
  * @param {number} id - ID produk
  * @returns {boolean} Success status
@@ -563,4 +626,6 @@ export default {
   ambilKategori,
   updateStok,
   cariProdukByBarcode,
+  generateSyncId,
+  setProdukSyncId,
 };

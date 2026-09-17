@@ -5,6 +5,7 @@ import { ActivityIndicator, StyleSheet, Text, View, useColorScheme } from "react
 import "react-native-reanimated";
 
 import { initDatabase, hapusTransaksiLama } from "../database/service";
+import { syncProdukUpload, syncProdukDownload, isSupabaseConfigured } from "../services/syncService";
 import useAuthStore from "../store/authStore";
 import { Colors } from "../constants/theme";
 import GlobalAlert from "../components/GlobalAlert";
@@ -26,7 +27,7 @@ export default function RootLayout() {
     const setupDatabase = async () => {
       try {
         console.log("Menginisialisasi database...");
-        await initDatabase();
+                await initDatabase();
                 setIsDbReady(true);
                 console.log("Database siap digunakan");
 
@@ -42,7 +43,26 @@ export default function RootLayout() {
                 } catch (cleanupError) {
                   console.error("⚠️ Auto-cleanup gagal:", cleanupError);
                 }
-      } catch (error) {
+
+                // ===== Auto-sync produk (silent, background) =====
+                // fetch terbaru dari Supabase bila env configurasi ada.
+                // Kenapa: HP-A ubah harga -> HP-B ikut setelah restart.
+                // Proses: upload lokal yang baru, poi download remote yang baru
+                // (last-write-wins by updated_at).
+                try {
+                  if (isSupabaseConfigured()) {
+                    const up = await syncProdukUpload();
+                    const down = await syncProdukDownload();
+                    console.log(
+                      `🔄 Auto-sync done: ↑${up.uploaded} ↓${down.downloaded} 🗑${down.deleted}`,
+                    );
+                  } else {
+                    console.log("🔌 Sync skip: supabase env belum configurasi");
+                  }
+                } catch (syncError) {
+                  console.error("⚠️ Auto-sync gagal:", syncError);
+                }
+              } catch (error) {
         console.error("Error setup database:", error);
         const errorMessage =
           error instanceof Error ? error.message : String(error);

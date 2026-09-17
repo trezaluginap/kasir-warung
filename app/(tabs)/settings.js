@@ -27,6 +27,11 @@ import usePrinterStore from "../../store/printerStore";
 import { MaterialIcon } from "../../components/MaterialIcon";
 import { ambilSemuaTransaksi } from "../../database/service";
 import {
+  syncProdukUpload,
+  syncProdukDownload,
+  isSupabaseConfigured,
+} from "../../services/syncService";
+import {
   showConfirm,
   showInfo,
   showSuccess,
@@ -42,6 +47,7 @@ export default function SettingsScreen() {
   const [openDrawer, setOpenDrawer] = useState(true);
   const [trxCount, setTrxCount] = useState(0);
   const [backupBusy, setBackupBusy] = useState(false);
+  const [syncBusy, setSyncBusy] = useState(false);
 
   useEffect(() => {
     usePrinterStore.getState().loadSavedPrinter();
@@ -59,10 +65,7 @@ export default function SettingsScreen() {
   }, []);
 
   // Supabase dikonfigurasi? (env terisi & bukan placeholder)
-  const hasSupabase =
-    (process.env.EXPO_PUBLIC_SUPABASE_URL || "").includes(".") &&
-    !(process.env.EXPO_PUBLIC_SUPABASE_URL || "").includes("placeholder") &&
-    (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "").length > 20;
+  const hasSupabase = isSupabaseConfigured();
 
   // ===== Backup: ekspor data ke file JSON + share =====
   const handleBackup = async () => {
@@ -104,6 +107,43 @@ export default function SettingsScreen() {
       showError("Gagal Backup", error.message || "Terjadi kesalahan");
     } finally {
       setBackupBusy(false);
+    }
+  };
+
+  // ===== Sync produk manual (device -> Supabase -> device lain) =====
+  const handleSync = async () => {
+    if (syncBusy) return;
+    if (!hasSupabase) {
+      showInfo(
+        "Sync Belum Konfigurasi",
+        "Set EXPO_PUBLIC_SUPABASE_URL + ANON_KEY di .env lalu rebuild app.",
+      );
+      return;
+    }
+    setSyncBusy(true);
+    try {
+      // Upload lokal yang lebih baru dulu, poi download remote yang lebih baru
+      const up = await syncProdukUpload();
+      const down = await syncProdukDownload();
+      const counts = [
+        up.uploaded > 0 ? `${up.uploaded}↑` : "",
+        down.downloaded > 0 ? `${down.downloaded}↓` : "",
+        down.deleted > 0 ? `${down.deleted}🗑` : "",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      showSuccess(
+        "Sync Selesai",
+        counts || "Konsisten (tidak ada perubahan)",
+      );
+      // Refresh trxCount (bisa saja deskep pembeli)
+      const list = await ambilSemuaTransaksi();
+      setTrxCount(list.length);
+    } catch (error) {
+      console.error("Sync error:", error);
+      showError("Gagal Sync", error.message || "Terjadi kesalahan");
+    } finally {
+      setSyncBusy(false);
     }
   };
 
@@ -226,16 +266,34 @@ export default function SettingsScreen() {
         {/* Section: Sinkronisasi */}
         <Text style={s.secLabel}>SINKRONISASI</Text>
         <View style={s.cardGroup}>
-          <View style={s.row}>
+          <TouchableOpacity
+            style={s.row}
+            onPress={handleSync}
+          >
             <View style={s.rowInfo}>
-              <Text style={s.rowLabel}>Transaksi lokal</Text>
+              <Text style={s.rowLabel}>Sync produk sekarang</Text>
               <Text style={s.rowMeta}>
-                {trxCount} transaksi di database device ini
+                {syncBusy
+                  ? "Bersiap... (upload + download)"
+                  : "Device lain ikut harga terbaru"}
               </Text>
             </View>
             <Text style={[s.statusText, !hasSupabase && s.statusTextOff]}>
               {hasSupabase ? "Siap" : "Lokal"}
             </Text>
+            <MaterialIcon
+              name="arrow_forward"
+              size={16}
+              color="#A8A29E"
+            />
+          </TouchableOpacity>
+          <View style={s.rowLast}>
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Data device ini</Text>
+              <Text style={s.rowMeta}>
+                {trxCount} transaksi di database lokal
+              </Text>
+            </View>
           </View>
           <TouchableOpacity
             style={s.rowLast}
