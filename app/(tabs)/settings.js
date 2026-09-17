@@ -125,6 +125,15 @@ export default function SettingsScreen() {
       // Upload lokal yang lebih baru dulu, poi download remote yang lebih baru
       const up = await syncProdukUpload();
       const down = await syncProdukDownload();
+
+      if (up.reason === "table_missing" || down.reason === "table_missing") {
+        showError(
+          "Tabel Belum Ada",
+          "Tabel 'products' belum dibuat di Supabase SQL Editor.",
+        );
+        return;
+      }
+
       const counts = [
         up.uploaded > 0 ? `${up.uploaded}↑` : "",
         down.downloaded > 0 ? `${down.downloaded}↓` : "",

@@ -92,6 +92,10 @@ export const syncProdukUpload = async () => {
     );
     return { success: true, uploaded, skipped };
   } catch (error) {
+    if (error?.code === "PGRST205" || error?.message?.includes("PGRST205")) {
+      console.warn("⚠️ Sync upload skipped: Tabel 'products' belum dibuat di Supabase.");
+      return { success: false, reason: "table_missing", message: "Tabel 'products' belum ada di Supabase" };
+    }
     console.error("❌ Sync upload error:", error);
     return { success: false, reason: "error", message: error.message };
   }
@@ -165,6 +169,10 @@ export const syncProdukDownload = async () => {
     );
     return { success: true, downloaded, deleted, skipped };
   } catch (error) {
+    if (error?.code === "PGRST205" || error?.message?.includes("PGRST205")) {
+      console.warn("⚠️ Sync download skipped: Tabel 'products' belum dibuat di Supabase.");
+      return { success: false, reason: "table_missing", message: "Tabel 'products' belum ada di Supabase" };
+    }
     console.error("❌ Sync download error:", error);
     return { success: false, reason: "error", message: error.message };
   }
