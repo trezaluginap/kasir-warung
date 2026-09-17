@@ -116,6 +116,9 @@ describe("cartStore — checkout", () => {
       ]),
       20000,
       10000,
+      0,
+      "tunai",
+      null,
     );
 
     // Stok produk dikurangi (Chitato qty 1 -> -1)

@@ -76,10 +76,12 @@ const createProductsTable = async () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nama TEXT NOT NULL,
       harga REAL NOT NULL,
+      hpp REAL DEFAULT 0,
       kategori TEXT DEFAULT 'Umum',
       stok INTEGER DEFAULT NULL,
       foto TEXT DEFAULT NULL,
       barcode TEXT DEFAULT NULL,
+      sync_id TEXT DEFAULT NULL,
       aktif INTEGER DEFAULT 1,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
@@ -104,6 +106,7 @@ const migrateProductsTable = async () => {
     const hasFoto = columns.some((c) => c.name === "foto");
     const hasBarcode = columns.some((c) => c.name === "barcode");
     const hasSyncId = columns.some((c) => c.name === "sync_id");
+    const hasHpp = columns.some((c) => c.name === "hpp");
 
     if (!hasFoto) {
       await db.execAsync("ALTER TABLE products ADD COLUMN foto TEXT DEFAULT NULL");
@@ -114,11 +117,15 @@ const migrateProductsTable = async () => {
       console.log("✅ Migration: column barcode ditambahkan");
     }
     if (!hasSyncId) {
-          await db.execAsync(
-            "ALTER TABLE products ADD COLUMN sync_id TEXT DEFAULT NULL",
-          );
-          console.log("✅ Migration: column sync_id ditambahkan");
-        }
+      await db.execAsync(
+        "ALTER TABLE products ADD COLUMN sync_id TEXT DEFAULT NULL",
+      );
+      console.log("✅ Migration: column sync_id ditambahkan");
+    }
+    if (!hasHpp) {
+      await db.execAsync("ALTER TABLE products ADD COLUMN hpp REAL DEFAULT 0");
+      console.log("✅ Migration: column hpp ditambahkan");
+    }
 
         // Backfill: produk existing tanpa sync_id -> generate
         const nullSync = await db.getAllAsync(
@@ -256,7 +263,7 @@ export const tambahProduk = async (data) => {
     throw new Error("Database belum siap!");
   }
 
-  const { nama, harga, kategori = "Umum", stok = null, foto = null, barcode = null, sync_id = null } = data;
+  const { nama, harga, hpp = 0, kategori = "Umum", stok = null, foto = null, barcode = null, sync_id = null } = data;
 
   if (!nama || !harga) {
     throw new Error("Nama dan harga wajib diisi!");
@@ -268,9 +275,10 @@ export const tambahProduk = async (data) => {
 
   try {
     const result = await dbInstance.runAsync(
-      "INSERT INTO products (nama, harga, kategori, stok, foto, barcode, sync_id, aktif, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)",
+      "INSERT INTO products (nama, harga, hpp, kategori, stok, foto, barcode, sync_id, aktif, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)",
       nama,
       harga,
+      hpp || 0,
       kategori,
       stok,
       foto,
@@ -286,6 +294,7 @@ export const tambahProduk = async (data) => {
       id: result.lastInsertRowId,
       nama,
       harga,
+      hpp: hpp || 0,
       kategori,
       stok,
       foto,
@@ -382,7 +391,7 @@ export const updateProduk = async (id, data) => {
     throw new Error("Database belum siap!");
   }
 
-  const { nama, harga, kategori, stok, foto, barcode, sync_id } = data;
+  const { nama, harga, hpp, kategori, stok, foto, barcode, sync_id } = data;
     const now = new Date().toISOString();
 
     const updates = [];
@@ -395,6 +404,10 @@ export const updateProduk = async (id, data) => {
     if (harga !== undefined) {
       updates.push("harga = ?");
       params.push(harga);
+    }
+    if (hpp !== undefined) {
+      updates.push("hpp = ?");
+      params.push(hpp);
     }
     if (kategori !== undefined) {
       updates.push("kategori = ?");

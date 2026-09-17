@@ -110,6 +110,7 @@ const useCartStore = create((set, get) => ({
           id: produk.id,
           nama: produk.nama,
           harga: produk.harga,
+          hpp: produk.hpp || 0,
           kategori: produk.kategori,
           foto: produk.foto,
           qty: 1,
@@ -205,7 +206,12 @@ const useCartStore = create((set, get) => ({
    *
    * @returns {Object} Result dengan status dan data transaksi
    */
-  checkout: async (uangBayar = 0, uangKembali = 0) => {
+  checkout: async (
+    uangBayar = 0,
+    uangKembali = 0,
+    metodeBayar = "tunai",
+    namaPelanggan = null,
+  ) => {
     const { items, totalHarga } = get();
 
     // Validasi: keranjang ga boleh kosong
@@ -217,29 +223,33 @@ const useCartStore = create((set, get) => ({
     }
 
     try {
-          // ===== Validasi stok dulu (sebelum simpan transaksi) =====
-          // Cek semua item produk: stok di DB harus >= qty yang dibeli.
-          // Kalau ada yang kurang -> BATAL, jangan lanjut (hindari stok negatif).
-          const produkItems = items.filter((i) => i.tipe === "produk" && i.id);
-          for (const item of produkItems) {
-            const product = await ambilProdukById(item.id);
-            if (!product) {
-              return {
-                success: false,
-                message: `Produk "${item.nama}" tidak ditemukan di database.`,
-              };
-            }
-            const stokTersedia = product.stok || 0;
-            if (stokTersedia < item.qty) {
-              return {
-                success: false,
-                message: `Stok "${item.nama}" tidak cukup (tersisa ${stokTersedia}, dibutuhkan ${item.qty}).`,
-              };
-            }
-          }
+      // ===== Validasi stok dulu (sebelum simpan transaksi) =====
+      const produkItems = items.filter((i) => i.tipe === "produk" && i.id);
+      for (const item of produkItems) {
+        const product = await ambilProdukById(item.id);
+        if (!product) {
+          return {
+            success: false,
+            message: `Produk "${item.nama}" tidak ditemukan di database.`,
+          };
+        }
+        const stokTersedia = product.stok || 0;
+        if (stokTersedia < item.qty) {
+          return {
+            success: false,
+            message: `Stok "${item.nama}" tidak cukup (tersisa ${stokTersedia}, dibutuhkan ${item.qty}).`,
+          };
+        }
+      }
 
-          // Format data barang untuk disimpan (model struk Indomaret)
-          const daftarBarang = items.map((item) => {
+      // Hitung total HPP
+      const totalHpp = items.reduce(
+        (sum, item) => sum + (item.hpp || 0) * item.qty,
+        0,
+      );
+
+      // Format data barang untuk disimpan (model struk Indomaret)
+      const daftarBarang = items.map((item) => {
         if (item.tipe === "jajanan") {
           return {
             tipe: "jajanan",
@@ -254,6 +264,7 @@ const useCartStore = create((set, get) => ({
             nama: item.nama,
             qty: item.qty,
             harga: item.harga,
+            hpp: item.hpp || 0,
             subtotal: item.qty * item.harga,
             foto: item.foto,
             kategori: item.kategori,
@@ -262,7 +273,15 @@ const useCartStore = create((set, get) => ({
       });
 
       // Simpan ke database
-            const transaksi = await simpanTransaksi(totalHarga, daftarBarang, uangBayar, uangKembali);
+      const transaksi = await simpanTransaksi(
+        totalHarga,
+        daftarBarang,
+        uangBayar,
+        uangKembali,
+        totalHpp,
+        metodeBayar,
+        namaPelanggan,
+      );
 
       // Update recent store untuk barang terakhir dibeli
       const recentStore = useRecentStore.getState();

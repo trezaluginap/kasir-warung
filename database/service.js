@@ -81,14 +81,17 @@ export const initDatabase = async () => {
 const createTransactionsTable = async () => {
   // Langsung pakai db, jangan getDatabase() karena dipanggil dari initDatabase()
   const query = `
-    CREATE TABLE IF NOT EXISTS transaksi (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      total_harga REAL NOT NULL,
-      daftar_barang TEXT NOT NULL,
-      waktu_transaksi TEXT NOT NULL,
-      uang_bayar REAL DEFAULT 0,
-      uang_kembali REAL DEFAULT 0
-    );
+  CREATE TABLE IF NOT EXISTS transaksi (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  total_harga REAL NOT NULL,
+  daftar_barang TEXT NOT NULL,
+  waktu_transaksi TEXT NOT NULL,
+  uang_bayar REAL DEFAULT 0,
+  uang_kembali REAL DEFAULT 0,
+  total_hpp REAL DEFAULT 0,
+  metode_bayar TEXT DEFAULT 'tunai',
+  nama_pelanggan TEXT DEFAULT NULL
+  );
   `;
 
   try {
@@ -110,6 +113,34 @@ const createTransactionsTable = async () => {
         await db.execAsync("ALTER TABLE transaksi ADD COLUMN uang_kembali REAL DEFAULT 0");
         console.log("✅ Migrasi: kolom uang_kembali ditambahkan");
       }
+      if (!existingCols.includes("total_hpp")) {
+        await db.execAsync("ALTER TABLE transaksi ADD COLUMN total_hpp REAL DEFAULT 0");
+        console.log("✅ Migrasi: kolom total_hpp ditambahkan");
+      }
+      if (!existingCols.includes("metode_bayar")) {
+        await db.execAsync("ALTER TABLE transaksi ADD COLUMN metode_bayar TEXT DEFAULT 'tunai'");
+        console.log("✅ Migrasi: kolom metode_bayar ditambahkan");
+      }
+      if (!existingCols.includes("nama_pelanggan")) {
+        await db.execAsync("ALTER TABLE transaksi ADD COLUMN nama_pelanggan TEXT DEFAULT NULL");
+        console.log("✅ Migrasi: kolom nama_pelanggan ditambahkan");
+      }
+
+      // ===== Buat tabel hutang =====
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS hutang (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          nama_pelanggan TEXT NOT NULL,
+          no_hp TEXT DEFAULT NULL,
+          total_hutang REAL NOT NULL,
+          sisa_hutang REAL NOT NULL,
+          detail_barang TEXT DEFAULT NULL,
+          status TEXT DEFAULT 'belum_lunas',
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+      `);
+      console.log("✅ Tabel hutang siap!");
     } catch (error) {
     console.error("❌ Error bikin tabel:", error);
     throw error;
@@ -127,7 +158,15 @@ const createTransactionsTable = async () => {
  *   ]
  * @returns {Object} Data transaksi yang baru disimpan
  */
-export const simpanTransaksi = async (totalHarga, daftarBarang, uangBayar = 0, uangKembali = 0) => {
+export const simpanTransaksi = async (
+  totalHarga,
+  daftarBarang,
+  uangBayar = 0,
+  uangKembali = 0,
+  totalHpp = 0,
+  metodeBayar = "tunai",
+  namaPelanggan = null,
+) => {
   // Validasi input
   if (typeof totalHarga !== "number" || totalHarga <= 0) {
     throw new Error("Total harga harus berupa angka positif!");
@@ -151,8 +190,8 @@ export const simpanTransaksi = async (totalHarga, daftarBarang, uangBayar = 0, u
   const waktuTransaksi = new Date().toISOString();
 
   const query = `
-    INSERT INTO transaksi (total_harga, daftar_barang, waktu_transaksi, uang_bayar, uang_kembali)
-    VALUES (?, ?, ?, ?, ?);
+    INSERT INTO transaksi (total_harga, daftar_barang, waktu_transaksi, uang_bayar, uang_kembali, total_hpp, metode_bayar, nama_pelanggan)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?);
   `;
 
   try {
@@ -163,19 +202,25 @@ export const simpanTransaksi = async (totalHarga, daftarBarang, uangBayar = 0, u
       waktuTransaksi,
       uangBayar,
       uangKembali,
+      totalHpp,
+      metodeBayar,
+      namaPelanggan,
     );
 
     console.log("✅ Transaksi berhasil disimpan! ID:", result.lastInsertRowId);
 
     // Return data transaksi yang baru disimpan
-        return {
-          id: result.lastInsertRowId,
-          totalHarga,
-          daftarBarang,
-          waktuTransaksi,
-          uangBayar,
-          uangKembali,
-        };
+    return {
+      id: result.lastInsertRowId,
+      totalHarga,
+      daftarBarang,
+      waktuTransaksi,
+      uangBayar,
+      uangKembali,
+      totalHpp,
+      metodeBayar,
+      namaPelanggan,
+    };
   } catch (error) {
     console.error("❌ Error simpan transaksi:", error);
     throw error;
@@ -210,14 +255,17 @@ export const ambilSemuaTransaksi = async (limit = null) => {
     const rows = await dbInstance.getAllAsync(query);
 
     // Parse JSON string jadi object lagi
-        const transaksiList = rows.map((row) => ({
-          id: row.id,
-          totalHarga: row.total_harga,
-          daftarBarang: JSON.parse(row.daftar_barang),
-          waktuTransaksi: row.waktu_transaksi,
-          uangBayar: row.uang_bayar || 0,
-          uangKembali: row.uang_kembali || 0,
-        }));
+    const transaksiList = rows.map((row) => ({
+      id: row.id,
+      totalHarga: row.total_harga,
+      daftarBarang: JSON.parse(row.daftar_barang),
+      waktuTransaksi: row.waktu_transaksi,
+      uangBayar: row.uang_bayar || 0,
+      uangKembali: row.uang_kembali || 0,
+      totalHpp: row.total_hpp || 0,
+      metodeBayar: row.metode_bayar || "tunai",
+      namaPelanggan: row.nama_pelanggan || null,
+    }));
 
     console.log(`✅ Berhasil ambil ${transaksiList.length} transaksi`);
     return transaksiList;
@@ -395,6 +443,84 @@ export const resetDatabase = async () => {
   }
 };
 
+// ===== HELPER HUTANG / KASBON =====
+
+export const tambahHutang = async (namaPelanggan, noHp, totalHutang, detailBarang) => {
+  const dbInstance = await getDatabase();
+  if (!dbInstance) throw new Error("Database belum siap!");
+
+  const now = new Date().toISOString();
+  const detailStr = typeof detailBarang === "object" ? JSON.stringify(detailBarang) : String(detailBarang || "");
+
+  const result = await dbInstance.runAsync(
+    `INSERT INTO hutang (nama_pelanggan, no_hp, total_hutang, sisa_hutang, detail_barang, status, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, 'belum_lunas', ?, ?)`,
+    namaPelanggan,
+    noHp || "",
+    totalHutang,
+    totalHutang,
+    detailStr,
+    now,
+    now,
+  );
+  return { id: result.lastInsertRowId, namaPelanggan, totalHutang, sisaHutang: totalHutang, status: "belum_lunas" };
+};
+
+export const ambilSemuaHutang = async () => {
+  const dbInstance = await getDatabase();
+  if (!dbInstance) throw new Error("Database belum siap!");
+
+  const rows = await dbInstance.getAllAsync("SELECT * FROM hutang ORDER BY updated_at DESC");
+  return rows.map((r) => {
+    let detail = [];
+    try {
+      detail = r.detail_barang ? JSON.parse(r.detail_barang) : [];
+    } catch (e) {
+      detail = [];
+    }
+    return {
+      id: r.id,
+      namaPelanggan: r.nama_pelanggan,
+      noHp: r.no_hp,
+      totalHutang: r.total_hutang,
+      sisaHutang: r.sisa_hutang,
+      detailBarang: detail,
+      status: r.status,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+    };
+  });
+};
+
+export const bayarHutang = async (id, nominal) => {
+  const dbInstance = await getDatabase();
+  if (!dbInstance) throw new Error("Database belum siap!");
+
+  const row = await dbInstance.getFirstAsync("SELECT * FROM hutang WHERE id = ?", id);
+  if (!row) throw new Error("Hutang tidak ditemukan!");
+
+  const sisaBaru = Math.max(0, row.sisa_hutang - nominal);
+  const statusBaru = sisaBaru === 0 ? "lunas" : "belum_lunas";
+  const now = new Date().toISOString();
+
+  await dbInstance.runAsync(
+    "UPDATE hutang SET sisa_hutang = ?, status = ?, updated_at = ? WHERE id = ?",
+    sisaBaru,
+    statusBaru,
+    now,
+    id,
+  );
+  return { id, sisaHutang: sisaBaru, status: statusBaru };
+};
+
+export const hapusHutang = async (id) => {
+  const dbInstance = await getDatabase();
+  if (!dbInstance) throw new Error("Database belum siap!");
+
+  await dbInstance.runAsync("DELETE FROM hutang WHERE id = ?", id);
+  return true;
+};
+
 // Export semua fungsi biar bisa dipake di file lain
 export default {
   initDatabase,
@@ -405,4 +531,8 @@ export default {
   hapusTransaksi,
   hapusTransaksiLama,
   resetDatabase,
+  tambahHutang,
+  ambilSemuaHutang,
+  bayarHutang,
+  hapusHutang,
 };

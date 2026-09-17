@@ -37,6 +37,7 @@ import usePrinterStore from "../store/printerStore";
 import { printStruk } from "../services/printerService";
 import ReceiptView from "../components/ReceiptView";
 import { MaterialIcon } from "../components/MaterialIcon";
+import { tambahHutang } from "../database/service";
 import { showSuccess, showError, showWarning, showInfo } from "../utils/alertHelper";
 
 const formatRupiah = (n) => `Rp ${(n || 0).toLocaleString("id-ID")}`;
@@ -57,6 +58,8 @@ export default function CheckoutScreen() {
 
   const [payMethod, setPayMethod] = useState("tunai");
   const [cashText, setCashText] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
   const [processing, setProcessing] = useState(false);
   const [lastReceipt, setLastReceipt] = useState(null);
   const printerName = usePrinterStore((s) => s.printerName);
@@ -117,9 +120,21 @@ export default function CheckoutScreen() {
       showWarning("Uang Kurang", `Kurang ${formatRupiah(totalHarga - cash)}`);
       return;
     }
+    if (payMethod === "kasbon" && !customerName.trim()) {
+      showWarning("Nama Pelanggan", "Silakan isi nama pelanggan untuk kasbon.");
+      return;
+    }
     setProcessing(true);
     try {
-      const r = await checkout(payMethod === "tunai" ? cash : 0, payMethod === "tunai" ? Math.max(0, cash - totalHarga) : 0);
+      if (payMethod === "kasbon") {
+        await tambahHutang(customerName.trim(), customerPhone.trim(), totalHarga, items);
+      }
+      const r = await checkout(
+        payMethod === "tunai" ? cash : 0,
+        payMethod === "tunai" ? Math.max(0, cash - totalHarga) : 0,
+        payMethod,
+        payMethod === "kasbon" ? customerName.trim() : null,
+      );
       if (r.success) {
         const kembalian =
           payMethod === "tunai" ? Math.max(0, cash - totalHarga) : 0;
@@ -300,6 +315,32 @@ export default function CheckoutScreen() {
                   ? `- ${formatRupiah(Math.abs(change))}`
                   : formatRupiah(change)}
               </Text>
+            </View>
+          </View>
+        )}
+
+        {/* INPUT KASBON (Nama & NO HP) */}
+        {payMethod === "kasbon" && (
+          <View style={s.cashSection}>
+            <Text style={s.secLabel}>DATA PELANGGAN KASBON</Text>
+            <View style={[s.inputBoxFull, { marginBottom: 12 }]}>
+              <TextInput
+                style={s.inputFieldFull}
+                value={customerName}
+                onChangeText={setCustomerName}
+                placeholder="Nama Pelanggan (Wajib)"
+                placeholderTextColor="#A8A29E"
+              />
+            </View>
+            <View style={s.inputBoxFull}>
+              <TextInput
+                style={s.inputFieldFull}
+                value={customerPhone}
+                onChangeText={setCustomerPhone}
+                keyboardType="phone-pad"
+                placeholder="Nomor HP / WA (Opsional)"
+                placeholderTextColor="#A8A29E"
+              />
             </View>
           </View>
         )}

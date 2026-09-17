@@ -255,6 +255,21 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Section: Fitur Usaha */}
+        <Text style={s.secLabel}>FITUR USAHA</Text>
+        <View style={s.cardGroup}>
+          <TouchableOpacity
+            style={s.rowLast}
+            onPress={() => router.push("/kasbon")}
+          >
+            <View style={s.rowInfo}>
+              <Text style={s.rowLabel}>Catatan Kasbon / Piutang</Text>
+              <Text style={s.rowMeta}>Kelola hutang pelanggan & WhatsApp tagihan</Text>
+            </View>
+            <MaterialIcon name="arrow_forward" size={16} color="#A8A29E" />
+          </TouchableOpacity>
+        </View>
+
         {/* Section: Kebijakan */}
         <Text style={s.secLabel}>KEBIJAKAN KASIR</Text>
         <View style={s.cardGroup}>

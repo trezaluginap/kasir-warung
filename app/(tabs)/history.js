@@ -28,6 +28,7 @@ import { ambilSemuaTransaksi, hapusTransaksi, hapusTransaksiLama } from "../../d
 import useAuthStore from "../../store/authStore";
 import { MaterialIcon } from "../../components/MaterialIcon";
 import ReceiptView from "../../components/ReceiptView";
+import BarChart from "../../components/BarChart";
 import { printStruk } from "../../services/printerService";
 import usePrinterStore from "../../store/printerStore";
 import { showSuccess, showError, showInfo, showConfirm } from "../../utils/alertHelper";
@@ -144,11 +145,17 @@ export default function HistoryScreen() {
     return matchId || matchTime || matchItems || matchPrice;
   });
 
-  // Summary berdasarkan filter (omzet sesuai apa yang terlihat)
+  // Summary berdasarkan filter (omzet & laba bersih)
   const totalOmset = filteredList.reduce(
     (sum, t) => sum + (t.totalHarga || 0),
     0,
   );
+  const totalHpp = filteredList.reduce(
+    (sum, t) => sum + (t.totalHpp || 0),
+    0,
+  );
+  const totalLaba = totalOmset - totalHpp;
+
   const totalQty = filteredList.reduce(
     (sum, t) =>
       sum + (t.daftarBarang || []).reduce((s, i) => s + (i.qty || 0), 0),
@@ -304,10 +311,23 @@ export default function HistoryScreen() {
           <Text style={s.summaryAmount}>
             {formatRupiah(totalOmset)}
           </Text>
+
+          {/* Laba Bersih Badge */}
+          <View style={s.labaRow}>
+            <Text style={s.labaLabel}>ESTIMASI LABA BERSIH:</Text>
+            <Text style={s.labaAmount}>+{formatRupiah(totalLaba)}</Text>
+          </View>
+
           <Text style={s.summaryMeta}>
-            {transaksiList.length} transaksi • {totalQty} item
+            {filteredList.length} transaksi • {totalQty} item
           </Text>
         </View>
+
+        {/* Grafik Omzet & Trend Warung */}
+        <BarChart
+          transaksiList={transaksiList}
+          days={dateFilter === "30" ? 30 : 7}
+        />
 
         {/* Filter Tanggal */}
         <View style={s.filterRow}>
@@ -549,6 +569,27 @@ const s = StyleSheet.create({
     color: "#1C1917",
     letterSpacing: -0.5,
     marginBottom: 2,
+  },
+  labaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginVertical: 4,
+    backgroundColor: "#ECFDF5",
+    alignSelf: "flex-start",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  labaLabel: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#047857",
+  },
+  labaAmount: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#059669",
   },
   summaryMeta: {
     fontSize: 12,

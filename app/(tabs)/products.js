@@ -57,35 +57,36 @@ export default function ProductsScreen() {
 
   const [nama, setNama] = useState("");
   const [harga, setHarga] = useState("");
+  const [hpp, setHpp] = useState("");
   const [kategori, setKategori] = useState("Makanan");
   const [stok, setStok] = useState("24");
   const [foto, setFoto] = useState("");
   const [barcode, setBarcode] = useState("");
 
-  const loadKategori = useCallback(async () => {
-    try {
-      const list = await ambilKategori();
-      setKategoriList(["Semua", ...list]);
-    } catch (error) {
-      console.error("Error load kategori:", error);
-    }
-  }, []);
-
-  const loadProduk = useCallback(async () => {
+  const loadProduk = async () => {
     try {
       const list = await ambilSemuaProduk({ aktifOnly: true });
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAllProdukList(list);
-    } catch (error) {
-      console.error("Error load produk:", error);
+    } catch (e) {
+      console.error("Error reload produk:", e);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    // Async DB fetches; setState occurs post-await, not synchronously.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadKategori();
-    loadProduk();
-  }, [loadKategori, loadProduk]);
+    let mounted = true;
+    ambilKategori().then((list) => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (mounted) setKategoriList(["Semua", ...list]);
+    });
+    ambilSemuaProduk({ aktifOnly: true }).then((list) => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (mounted) setAllProdukList(list);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Filter — memoized: hanya re-run saat allProdukList / kategori / search berubah
   const filteredList = useMemo(() => {
@@ -120,6 +121,7 @@ export default function ProductsScreen() {
   const resetForm = () => {
     setNama("");
     setHarga("");
+    setHpp("");
     setKategori("Makanan");
     setStok("24");
     setFoto("");
@@ -136,6 +138,7 @@ export default function ProductsScreen() {
   const openEditModal = (produk) => {
     setNama(produk.nama);
     setHarga(formatCurrencyInput(String(produk.harga)));
+    setHpp(produk.hpp ? formatCurrencyInput(String(produk.hpp)) : "");
     setKategori(produk.kategori || "Makanan");
     setStok(produk.stok ? String(produk.stok) : "24");
     setFoto(produk.foto || "");
@@ -151,6 +154,7 @@ export default function ProductsScreen() {
       return;
     }
     const hargaNum = parseCurrencyInput(harga);
+    const hppNum = parseCurrencyInput(hpp);
     if (hargaNum <= 0) {
       showWarning("Harga tidak valid", "Harga jual harus lebih dari 0.");
       return;
@@ -163,6 +167,7 @@ export default function ProductsScreen() {
         await updateProduk(editingId, {
           nama: nama.trim(),
           harga: hargaNum,
+          hpp: hppNum,
           kategori: kategori.trim() || "Makanan",
           foto: fotoVal,
           barcode: barcodeVal,
@@ -171,6 +176,7 @@ export default function ProductsScreen() {
         await tambahProduk({
           nama: nama.trim(),
           harga: hargaNum,
+          hpp: hppNum,
           kategori: kategori.trim() || "Makanan",
           stok: stokNum,
           foto: fotoVal,
@@ -414,6 +420,21 @@ export default function ProductsScreen() {
                     keyboardType="numeric"
                     value={harga}
                     onChangeText={(t) => setHarga(formatCurrencyInput(t))}
+                  />
+                </View>
+              </View>
+
+              <View style={s.fieldGroup}>
+                <Text style={s.fieldLabel}>HARGA MODAL (HPP)</Text>
+                <View style={s.fieldInput}>
+                  <Text style={s.fieldRp}>Rp</Text>
+                  <TextInput
+                    style={s.fieldText}
+                    placeholder="0 (opsional)"
+                    placeholderTextColor="#D6D3D1"
+                    keyboardType="numeric"
+                    value={hpp}
+                    onChangeText={(t) => setHpp(formatCurrencyInput(t))}
                   />
                 </View>
               </View>
