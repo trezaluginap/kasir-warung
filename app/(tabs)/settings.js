@@ -19,11 +19,19 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Sharing from "expo-sharing";
+import { File, Directory, Paths } from "expo-file-system";
 import { Colors, Spacing } from "../../constants/theme";
 import useAuthStore from "../../store/authStore";
 import usePrinterStore from "../../store/printerStore";
 import { MaterialIcon } from "../../components/MaterialIcon";
-import { showConfirm, showInfo } from "../../utils/alertHelper";
+import { ambilSemuaTransaksi } from "../../database/service";
+import {
+  showConfirm,
+  showInfo,
+  showSuccess,
+  showError,
+} from "../../utils/alertHelper";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -32,10 +40,72 @@ export default function SettingsScreen() {
 
   const [autoPrint, setAutoPrint] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(true);
+  const [trxCount, setTrxCount] = useState(0);
+  const [backupBusy, setBackupBusy] = useState(false);
 
   useEffect(() => {
     usePrinterStore.getState().loadSavedPrinter();
+
+    // Hitung transaksi real dari database lokal
+    const countTrx = async () => {
+      try {
+        const list = await ambilSemuaTransaksi();
+        setTrxCount(list.length);
+      } catch (error) {
+        console.error("Error count transaksi:", error);
+      }
+    };
+    countTrx();
   }, []);
+
+  // Supabase dikonfigurasi? (env terisi & bukan placeholder)
+  const hasSupabase =
+    (process.env.EXPO_PUBLIC_SUPABASE_URL || "").includes(".") &&
+    !(process.env.EXPO_PUBLIC_SUPABASE_URL || "").includes("placeholder") &&
+    (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "").length > 20;
+
+  // ===== Backup: ekspor data ke file JSON + share =====
+  const handleBackup = async () => {
+    if (backupBusy) return;
+    setBackupBusy(true);
+    try {
+      const list = await ambilSemuaTransaksi();
+      if (list.length === 0) {
+        showInfo("Tidak Ada", "Belum ada transaksi untuk dibackup.");
+        return;
+      }
+
+      const data = {
+        app: "TRITOP JAYA",
+        eksporPada: new Date().toISOString(),
+        totalTransaksi: list.length,
+        transaksi: list,
+      };
+
+      // Simpan ke file JSON di Documents
+      const fileName = `backup_warung_${new Date()
+        .toISOString()
+        .slice(0, 10)}.json`;
+      const dest = new File(Paths.document, fileName);
+      await dest.write(`${JSON.stringify(data, null, 2)}\n`);
+
+      // Buka share sheet (WhatsApp/Drive/simpan)
+      const ok = await Sharing.isAvailableAsync();
+      if (ok) {
+        await Sharing.shareAsync(dest.uri, {
+          mimeType: "application/json",
+          dialogTitle: "Backup Data Warung",
+        });
+      } else {
+        showSuccess("Backup Siap", `File: ${fileName}`);
+      }
+    } catch (error) {
+      console.error("Backup error:", error);
+      showError("Gagal Backup", error.message || "Terjadi kesalahan");
+    } finally {
+      setBackupBusy(false);
+    }
+  };
 
   const handleLogout = () => {
     showConfirm({
@@ -84,7 +154,7 @@ export default function SettingsScreen() {
           <View style={s.rowLast}>
             <Text style={s.rowLabel}>Alamat</Text>
             <Text style={s.rowValueSub}>
-              Jl. Cendrawasih No. 12, Pasar Minggu
+              Jl. Raya No. 123
             </Text>
           </View>
         </View>
@@ -158,17 +228,26 @@ export default function SettingsScreen() {
         <View style={s.cardGroup}>
           <View style={s.row}>
             <View style={s.rowInfo}>
-              <Text style={s.rowLabel}>Data lokal</Text>
+              <Text style={s.rowLabel}>Transaksi lokal</Text>
               <Text style={s.rowMeta}>
-                142 transaksi menunggu cloud
+                {trxCount} transaksi di database device ini
               </Text>
             </View>
-            <Text style={s.statusText}>Aman</Text>
+            <Text style={[s.statusText, !hasSupabase && s.statusTextOff]}>
+              {hasSupabase ? "Siap" : "Lokal"}
+            </Text>
           </View>
-          <TouchableOpacity style={s.rowLast}>
+          <TouchableOpacity
+            style={s.rowLast}
+            onPress={handleBackup}
+          >
             <View style={s.rowInfo}>
               <Text style={s.rowLabel}>Backup data</Text>
-              <Text style={s.rowMeta}>Ekspor ke Excel / CSV</Text>
+              <Text style={s.rowMeta}>
+                {backupBusy
+                  ? "Bersiap file JSON..."
+                  : "Ekspor ke file JSON + share"}
+              </Text>
             </View>
             <MaterialIcon
               name="arrow_forward"
@@ -309,6 +388,9 @@ const s = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     color: "#059669",
+  },
+  statusTextOff: {
+    color: "#57534E",
   },
 
   // Actions
