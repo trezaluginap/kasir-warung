@@ -17,6 +17,7 @@ export const ICONS = {
   add: "plus",
   remove: "minus",
   delete: "trash-can-outline",
+  delete_sweep: "delete-sweep",
   edit: "pencil-outline",
   refresh: "refresh",
   print: "printer",
