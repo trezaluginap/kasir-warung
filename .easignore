@@ -8,11 +8,10 @@ dist/
 .env.*
 !.env.example
 
-# Testing & tooling (tidak untuk cloud build)
+# Testing & tooling
 __tests__/
 coverage/
 jest.config.js
-babel.config.js
 
 # Git & OS junk
 .git/
