@@ -1,0 +1,25 @@
+# Dependency & build cache
+node_modules/
+.expo/
+dist/
+
+# Environment & credentials (PRAMANA! jangan pernah push)
+.env
+.env.*
+!.env.example
+
+# Testing & tooling (tidak untuk cloud build)
+__tests__/
+coverage/
+jest.config.js
+babel.config.js
+
+# Git & OS junk
+.git/
+.gitignore
+*.log
+.DS_Store
+
+# Docs
+docs/
+*.md
