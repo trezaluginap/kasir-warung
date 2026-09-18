@@ -59,7 +59,6 @@ export default function ProductsScreen() {
   const [harga, setHarga] = useState("");
   const [hpp, setHpp] = useState("");
   const [kategori, setKategori] = useState("Makanan");
-  const [stok, setStok] = useState("24");
   const [foto, setFoto] = useState("");
   const [barcode, setBarcode] = useState("");
 
@@ -123,7 +122,6 @@ export default function ProductsScreen() {
     setHarga("");
     setHpp("");
     setKategori("Makanan");
-    setStok("24");
     setFoto("");
     setBarcode("");
     setEditingId(null);
@@ -140,7 +138,6 @@ export default function ProductsScreen() {
     setHarga(formatCurrencyInput(String(produk.harga)));
     setHpp(produk.hpp ? formatCurrencyInput(String(produk.hpp)) : "");
     setKategori(produk.kategori || "Makanan");
-    setStok(produk.stok ? String(produk.stok) : "24");
     setFoto(produk.foto || "");
     setBarcode(produk.barcode || "");
     setEditingId(produk.id);
@@ -159,7 +156,6 @@ export default function ProductsScreen() {
       showWarning("Harga tidak valid", "Harga jual harus lebih dari 0.");
       return;
     }
-    const stokNum = parseInt(stok) || 0;
     const fotoVal = foto.trim() ? foto.trim() : null;
     const barcodeVal = barcode.trim() ? barcode.trim() : null;
     try {
@@ -178,7 +174,6 @@ export default function ProductsScreen() {
           harga: hargaNum,
           hpp: hppNum,
           kategori: kategori.trim() || "Makanan",
-          stok: stokNum,
           foto: fotoVal,
           barcode: barcodeVal,
         });
@@ -345,7 +340,7 @@ export default function ProductsScreen() {
                   {item.nama}
                 </Text>
                 <Text style={s.productMeta}>
-                  {item.kategori || "Umum"} • Stok {item.stok || 0}
+                  {item.kategori || "Umum"}
                 </Text>
               </View>
               <View style={s.productRight}>
@@ -463,20 +458,6 @@ export default function ProductsScreen() {
                       </TouchableOpacity>
                     ),
                   )}
-                </View>
-              </View>
-
-              <View style={s.fieldGroup}>
-                <Text style={s.fieldLabel}>STOK</Text>
-                <View style={s.fieldInput}>
-                  <TextInput
-                    style={s.fieldText}
-                    placeholder="24"
-                    placeholderTextColor="#D6D3D1"
-                    keyboardType="numeric"
-                    value={stok}
-                    onChangeText={setStok}
-                  />
                 </View>
               </View>
 

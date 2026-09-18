@@ -23,10 +23,12 @@ import {
   ambilSemuaProduk,
   tambahProduk,
   updateProduk,
+  setProdukSyncId,
   hapusProduk,
 } from "../database/productService";
 
 const TABLE = "products";
+const productKey = (p) => `${String(p.nama || "").trim().toLowerCase()}\u0000${String(p.kategori || "Umum").trim().toLowerCase()}`;
 
 export const isSupabaseConfigured = () => {
   const url = process.env.EXPO_PUBLIC_SUPABASE_URL || "";
@@ -45,24 +47,37 @@ export const syncProdukUpload = async () => {
 
   try {
     const local = await ambilSemuaProduk({ aktifOnly: false });
+    const { data: remoteAll, error: remoteErr } = await supabase
+      .from(TABLE)
+      .select("sync_id, nama, kategori, barcode, updated_at")
+      .limit(1000);
+    if (remoteErr) throw remoteErr;
+
+    const remoteBySyncId = new Map((remoteAll || []).map((p) => [p.sync_id, p]));
+    const remoteByKey = new Map((remoteAll || []).map((p) => [productKey(p), p]));
     let uploaded = 0;
     let skipped = 0;
 
-    for (const p of local) {
-      if (!p.sync_id) continue; // harus punya sync_id
+    for (const product of local) {
+      let p = product;
+      let remote = remoteBySyncId.get(p.sync_id);
 
-      const { data: remote, error: fetchErr } = await supabase
-        .from(TABLE)
-        .select("updated_at")
-        .eq("sync_id", p.sync_id)
-        .maybeSingle();
-
-      if (fetchErr) throw fetchErr;
+      // Produk seed lama punya sync_id berbeda per instalasi. Cocokkan nama+kategori
+      // sekali agar barcode hasil scan tidak membuat produk cloud duplikat.
+      if (!remote) {
+        const sameProduct = remoteByKey.get(productKey(p));
+        if (sameProduct) {
+          await setProdukSyncId(p.id, sameProduct.sync_id);
+          p = { ...p, sync_id: sameProduct.sync_id };
+          remote = sameProduct;
+        }
+      }
 
       const localTs = new Date(p.updated_at).getTime();
       const remoteTs = remote ? new Date(remote.updated_at).getTime() : 0;
+      const barcodeChanged = Boolean(p.barcode) && p.barcode !== remote?.barcode;
 
-      if (!remote || localTs > remoteTs) {
+      if (!remote || localTs > remoteTs || barcodeChanged) {
         const { error } = await supabase
           .from(TABLE)
           .upsert(
@@ -115,6 +130,7 @@ export const syncProdukDownload = async () => {
     const localBySyncId = new Map(
       local.filter((p) => p.sync_id).map((p) => [p.sync_id, p]),
     );
+    const localByKey = new Map(local.map((p) => [productKey(p), p]));
 
     const { data: remoteAll, error } = await supabase
       .from(TABLE)
@@ -128,7 +144,17 @@ export const syncProdukDownload = async () => {
     let skipped = 0;
 
     for (const remote of remoteAll || []) {
-      const localP = localBySyncId.get(remote.sync_id);
+      let localP = localBySyncId.get(remote.sync_id);
+      // Seed lama punya sync_id berbeda antar instalasi. Satukan berdasarkan
+      // nama+kategori agar barcode dan data edit tidak menjadi produk duplikat.
+      if (!localP) {
+        const sameProduct = localByKey.get(productKey(remote));
+        if (sameProduct) {
+          await setProdukSyncId(sameProduct.id, remote.sync_id);
+          localP = { ...sameProduct, sync_id: remote.sync_id };
+          localBySyncId.set(remote.sync_id, localP);
+        }
+      }
       const remoteTs = new Date(remote.updated_at).getTime();
       const localTs = localP ? new Date(localP.updated_at).getTime() : 0;
 

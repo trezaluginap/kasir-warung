@@ -19,7 +19,6 @@
 
 import { create } from "zustand";
 import { simpanTransaksi } from "../database/service";
-import { updateStok, ambilProdukById } from "../database/productService";
 import { useRecentStore } from "./recentStore";
 
 /**
@@ -223,24 +222,8 @@ const useCartStore = create((set, get) => ({
     }
 
     try {
-      // ===== Validasi stok dulu (sebelum simpan transaksi) =====
-      const produkItems = items.filter((i) => i.tipe === "produk" && i.id);
-      for (const item of produkItems) {
-        const product = await ambilProdukById(item.id);
-        if (!product) {
-          return {
-            success: false,
-            message: `Produk "${item.nama}" tidak ditemukan di database.`,
-          };
-        }
-        const stokTersedia = product.stok || 0;
-        if (stokTersedia < item.qty) {
-          return {
-            success: false,
-            message: `Stok "${item.nama}" tidak cukup (tersisa ${stokTersedia}, dibutuhkan ${item.qty}).`,
-          };
-        }
-      }
+      // Stok tidak dilacak: checkout hanya bergantung pada keranjang dan DB transaksi.
+      // Kolom stok lama tetap dipertahankan supaya data pengguna tidak dihapus.
 
       // Hitung total HPP
       const totalHpp = items.reduce(
@@ -297,21 +280,8 @@ const useCartStore = create((set, get) => ({
         }
       });
 
-      // ===== Kurangi stok produk yang dibeli =====
-            // Setelah transaksi sukses, decrement stok tiap produk.
-            // Item jajanan (tanpa id produk) dilewati.
-            for (const item of produkItems) {
-              try {
-                await updateStok(item.id, -item.qty);
-              } catch (stokError) {
-                // Jangan batalkan transaksi kalau update stok gagal —
-                // transaksi sudah tercatat. Log saja supaya ketahuan.
-                console.error(`⚠️ Gagal update stok ${item.nama}:`, stokError);
-              }
-            }
-
-            // Kosongkan keranjang setelah berhasil
-            get().clearKeranjang();
+      // Kosongkan keranjang setelah berhasil
+      get().clearKeranjang();
 
       console.log("🎉 Checkout berhasil! ID:", transaksi.id);
 

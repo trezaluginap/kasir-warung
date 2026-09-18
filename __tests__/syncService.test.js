@@ -19,6 +19,7 @@ jest.mock("../database/productService", () => ({
   ]),
   tambahProduk: jest.fn().mockResolvedValue({ id: 2, sync_id: "p_456" }),
   updateProduk: jest.fn().mockResolvedValue(true),
+  setProdukSyncId: jest.fn().mockResolvedValue(true),
   hapusProduk: jest.fn().mockResolvedValue(true),
 }));
 
@@ -30,8 +31,7 @@ describe("syncService", () => {
   test("syncProdukUpload returns result object", async () => {
     supabase.from.mockReturnValue({
       select: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockReturnThis(),
-      maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+      limit: jest.fn().mockResolvedValue({ data: [], error: null }),
       upsert: jest.fn().mockResolvedValue({ error: null }),
     });
 

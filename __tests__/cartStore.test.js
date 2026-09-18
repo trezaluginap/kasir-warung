@@ -5,13 +5,6 @@ jest.mock("../database/service", () => ({
   simpanTransaksi: jest.fn(),
 }));
 
-// Mock productService — cartStore pakai updateStok & ambilProdukById
-// saat checkout (validasi + decrement stok).
-jest.mock("../database/productService", () => ({
-  updateStok: jest.fn(),
-  ambilProdukById: jest.fn(),
-}));
-
 // Mock recentStore — zelfde reden: AsyncStorage is een native RN module
 jest.mock("../store/recentStore", () => ({
   useRecentStore: {
@@ -23,14 +16,11 @@ jest.mock("../store/recentStore", () => ({
 
 import useCartStore from "../store/cartStore";
 import { simpanTransaksi } from "../database/service";
-import { updateStok, ambilProdukById } from "../database/productService";
 
 // Reset state vóór elke test — anders lopen items van de vorige test door
 beforeEach(() => {
   useCartStore.setState({ items: [], totalHarga: 0 });
   simpanTransaksi.mockReset();
-  updateStok.mockReset();
-  ambilProdukById.mockReset();
 });
 
 describe("cartStore — tambahProduk", () => {
@@ -90,15 +80,13 @@ describe("cartStore — checkout", () => {
     expect(simpanTransaksi).not.toHaveBeenCalled();
   });
 
-  test("checkout simpan transaksi + clear keranjang + kurangi stok", async () => {
+  test("checkout simpan transaksi dan clear keranjang tanpa validasi stok", async () => {
     simpanTransaksi.mockResolvedValue({
       id: 99,
       totalHarga: 10000,
       daftarBarang: [],
       waktuTransaksi: "2026-09-15T00:00:00.000Z",
     });
-    // Stok produk id=3 cukup (10)
-    ambilProdukById.mockResolvedValue({ id: 3, nama: "Chitato", stok: 10 });
 
     const st = useCartStore.getState();
     st.tambahProduk({ id: 3, nama: "Chitato", harga: 8000 });
@@ -121,36 +109,28 @@ describe("cartStore — checkout", () => {
       null,
     );
 
-    // Stok produk dikurangi (Chitato qty 1 -> -1)
-    expect(updateStok).toHaveBeenCalledWith(3, -1);
-
     // Keranjang leeg na succesvolle checkout
     expect(useCartStore.getState().items).toHaveLength(0);
     expect(useCartStore.getState().totalHarga).toBe(0);
   });
 
-  test("checkout batal kalau stok tidak cukup", async () => {
-    ambilProdukById.mockResolvedValue({ id: 5, nama: "Indomie", stok: 1 });
+  test("checkout tetap sukses walau produk tidak punya stok", async () => {
+    simpanTransaksi.mockResolvedValue({ id: 100 });
 
     const st = useCartStore.getState();
     st.tambahProduk({ id: 5, nama: "Indomie", harga: 3000 });
-    // Tambah qty sampai 3 (lebih dari stok 1)
     st.tambahProduk({ id: 5, nama: "Indomie", harga: 3000 });
     st.tambahProduk({ id: 5, nama: "Indomie", harga: 3000 });
 
     const result = await st.checkout(10000, 1000);
 
-    expect(result.success).toBe(false);
-    expect(result.message).toMatch(/tidak cukup/i);
-    expect(simpanTransaksi).not.toHaveBeenCalled();
-    expect(updateStok).not.toHaveBeenCalled();
-    // Keranjang tetap
-    expect(useCartStore.getState().items).toHaveLength(1);
+    expect(result.success).toBe(true);
+    expect(simpanTransaksi).toHaveBeenCalledTimes(1);
+    expect(useCartStore.getState().items).toHaveLength(0);
   });
 
   test("checkout faalt als database faalt → keranjang blijft", async () => {
     simpanTransaksi.mockRejectedValue(new Error("disk vol"));
-    ambilProdukById.mockResolvedValue({ id: 4, nama: "Gula 1kg", stok: 5 });
 
     const st = useCartStore.getState();
     st.tambahProduk({ id: 4, nama: "Gula 1kg", harga: 15000 });

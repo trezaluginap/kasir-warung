@@ -470,9 +470,8 @@ export const setProdukSyncId = async (id, syncId) => {
 
   try {
     await dbInstance.runAsync(
-      "UPDATE products SET sync_id = ?, updated_at = ? WHERE id = ?",
+      "UPDATE products SET sync_id = ? WHERE id = ?",
       syncId,
-      new Date().toISOString(),
       id,
     );
     return true;
